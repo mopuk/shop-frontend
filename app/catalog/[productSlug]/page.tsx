@@ -2,9 +2,7 @@ import { notFound } from "next/navigation";
 import { ProductVariant } from "../../../components/CatalogList";
 import Image from "next/image";
 
-export default async function page(params: {
-  params: { productSlug: string };
-}) {
+export default async function page(params: { productSlug: string }) {
   const { productSlug } = params;
 
   const res = await fetch(
