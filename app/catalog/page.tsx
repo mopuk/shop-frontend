@@ -5,10 +5,12 @@ export default async function page() {
   try {
     const res = await fetch(process.env.BACKEND_URL + "/api/products");
     if (!res.ok) {
+      console.log(res.status)
       return <div>Error on fetch</div>;
     }
     data = await res.json();
   } catch (e) {
+    console.log(e)
     return <div>Error on fetch</div>;
   }
 

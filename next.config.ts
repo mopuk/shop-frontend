@@ -2,7 +2,15 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: [new URL("https://shop-backend-djyw.onrender.com/static/images/**")],
+    remotePatterns: [
+      new URL("https://shop-backend-djyw.onrender.com/static/images/**"),
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+        port: "5000",
+        pathname: "/static/images/**",
+      },
+    ],
   },
 };
 

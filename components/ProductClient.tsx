@@ -11,6 +11,7 @@ export default function ProductClient({
   variant: ProductVariant;
 }) {
   const router = useRouter();
+  console.log(variant)
   return (
     <div>
       <div>
@@ -19,6 +20,7 @@ export default function ProductClient({
           alt={variant.images[0].alt_text}
           width={300}
           height={400}
+          unoptimized
         ></Image>
         <div className="flex">
           {product.variants &&
