@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function Header() {
   return (
-    <header className="flex items-center w-full h-10">
+    <header className="flex items-center w-full px-6 py-4">
       <div className="flex flex-1 items-center">
         <button>
           <Image src={"/images/menu.svg"} alt={"Menu"} width={40} height={40} />
