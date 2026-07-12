@@ -11,7 +11,7 @@ export default function Hero() {
         <h2 className="mb-6 text-white text-xl font-poppins">
           Premium Shoes for Every Journey
         </h2>
-        <p className="mb-10 text-gray-400 text-lg font-inter w-148.75">
+        <p className="mb-10 text-gray-400 text-sm font-inter w-148.75">
           From everyday essentials to statement sneakers, discover footwear that
           combines comfort, quality, and timeless design. Find the perfect pair
           for work, weekends, workouts, and everything in between.

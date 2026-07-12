@@ -18,7 +18,7 @@ type Size = {
   sort_order: number;
 };
 
-type Image = {
+type ProductImage = {
   id: number;
   url: string;
   alt_text: string;
@@ -71,7 +71,7 @@ export type ProductVariant = {
   color: Color;
   size: Size;
   material: Material;
-  images: Image[];
+  images: ProductImage[];
 };
 
 export default function CatalogList({
@@ -83,9 +83,15 @@ export default function CatalogList({
   const handleOnClick = (slug: string, variantId: number) => {
     router.push(`/product/${slug}/${variantId} `);
   };
+
   return (
     <ul>
       {productVariants.map((productVariant) => {
+        const imageURL = productVariant.images?.[0]?.url
+          ? process.env.NEXT_PUBLIC_BACKEND_URL +
+            "/static/images/" +
+            productVariant.images[0].url
+          : "";
         return (
           <li
             key={productVariant.id}
@@ -93,12 +99,13 @@ export default function CatalogList({
               handleOnClick(productVariant.product.slug, productVariant.id)
             }
           >
-            <img
-              src={productVariant.images[0].url}
+            <Image
+              src={imageURL}
               alt={productVariant.images[0].alt_text}
               width={200}
               height={175}
               style={{ objectFit: "cover" }}
+              unoptimized
             />
             <h3>{productVariant.price}</h3>
             <p>{productVariant.product.name}</p>

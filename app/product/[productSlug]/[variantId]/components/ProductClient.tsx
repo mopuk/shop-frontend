@@ -1,5 +1,5 @@
 "use client"
-import { Product, ProductVariant } from "./CatalogList";
+import { Product, ProductVariant } from "@/app/catalog/components/CatalogList";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 

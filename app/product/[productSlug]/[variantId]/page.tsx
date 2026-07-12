@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import { Product, ProductVariant } from "../../../../components/CatalogList";
-import ProductClient from "@/components/ProductClient";
+import { Product, ProductVariant } from "../../../catalog/components/CatalogList";
+import ProductClient from "./components/ProductClient";
 
 export default async function Page({
   params,
@@ -10,7 +10,7 @@ export default async function Page({
   const { productSlug, variantId } = await params;
 
   const res = await fetch(`
-    ${process.env.BACKEND_URL}/api/products/${productSlug}
+    ${process.env.BACKEND_URL}/api/v1/products/${productSlug}
   `);
 
   if (!res.ok) return notFound();
