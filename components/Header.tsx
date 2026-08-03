@@ -1,11 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { Ghost } from "lucide-react";
 
 export default function Header() {
   return (
-    <header className="flex items-center w-full py-4 px-4">
+    <header className="flex items-center w-full py-4 px-55 font-montserrat ">
       <nav className="w-screen flex justify-between items-center">
         <Link href="/">
           <Image src={"/images/Logo.svg"} alt="Logo" height={32} width={160} />
