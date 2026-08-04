@@ -1,94 +1,43 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-type Color = {
-  name: string;
-  hex_code: string;
-  slug: string;
-};
+import { ProductVariant } from "../types";
 
-type Material = {
-  name: string;
-  slug: string;
-};
-
-type Size = {
-  name: string;
-  sort_order: number;
-};
-
-type ProductImage = {
-  id: number;
-  url: string;
-  alt_text: string;
-  sort_order: number;
-  variant_id: number;
-};
-
-export type Brand = {
-  id: number;
-  name: string;
-  slug: string;
-};
-
-export type Category = {
-  id: number;
-  name: string;
-  slug: string;
-  parent_id: number | null;
-  children: Category[];
-};
-
-export type Product = {
-  id: number;
-  name: string;
-  slug: string;
-  description: string;
-  short_description: string;
-  thumbnail: string;
-
-  tags: string[];
-  is_featured: boolean;
-  created_at: string;
-  gender: "men" | "women" | "unisex";
-  base_price: number;
-
-  brand: string | null;
-  category: string | null;
-
-  variants: ProductVariant[];
-};
-
-export type ProductVariant = {
-  id: number;
-  price: number;
-  stock: number;
-  is_available: boolean;
-
-  product: Product;
-
-  color: Color;
-  size: Size;
-  material: Material;
-  images: ProductImage[];
-};
-
-export default function CatalogList({
-  productVariants,
-}: {
-  productVariants: ProductVariant[];
-}) {
+export default function CatalogList() {
   const router = useRouter();
   const handleOnClick = (slug: string, variantId: number) => {
     router.push(`/product/${slug}/${variantId} `);
   };
 
+  const {
+    data: productVariants,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["product_variants"],
+    queryFn: async () => {
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_API + "/api/v1/products",
+      );
+      return await response.json();
+    },
+  });
+
+  if (isLoading)
+    return (
+      <div className="spinner-container">
+        <div className="spinner"></div>
+      </div>
+    );
+  if (error) return <div>{error.message}</div>;
+
   return (
-    <ul>
-      {productVariants.map((productVariant) => {
+    <ul className="grid grid-cols-2 xl:grid-cols-3">
+      {productVariants.variants.map((productVariant: ProductVariant) => {
         const imageURL = productVariant.images?.[0]?.url
-          ? process.env.NEXT_PUBLIC_BACKEND_URL +
+          ? process.env.NEXT_PUBLIC_BACKEND_API +
             "/static/images/" +
             productVariant.images[0].url
           : "";
