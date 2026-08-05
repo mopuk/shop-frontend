@@ -4,6 +4,7 @@ import { Montserrat, Hanken_Grotesk } from "next/font/google";
 import { cn } from "@/lib/utils";
 import ThemeProvider from "@/components/ThemeProvider";
 import QueryProvider from "./providers";
+import Footer from "@/components/Footer";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -26,6 +27,7 @@ export default function RootLayout({
           <QueryProvider>
             <Header />
             {children}
+            <Footer />
           </QueryProvider>
         </ThemeProvider>
       </body>

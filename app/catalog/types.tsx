@@ -72,6 +72,7 @@ export type ProductVariant = {
   price: number;
   stock: number;
   is_available: boolean;
+  thumbnail: string;
 
   product: Product;
 

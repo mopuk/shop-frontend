@@ -4,7 +4,7 @@ import FeaturedCard from "./FeaturedCard";
 import Link from "next/link";
 import Image from "next/image";
 
-import { ProductVariant } from "@/app/catalog/components/CatalogList";
+import { ProductVariant } from "@/app/catalog/types.ts";
 
 export default function Featured() {
   const { data, isPending, error } = useQuery({
