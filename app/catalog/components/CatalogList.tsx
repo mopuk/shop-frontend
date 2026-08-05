@@ -47,7 +47,6 @@ export type Product = {
   description: string;
   short_description: string;
   thumbnail: string;
-
   tags: string[];
   is_featured: boolean;
   created_at: string;
@@ -65,6 +64,7 @@ export type ProductVariant = {
   price: number;
   stock: number;
   is_available: boolean;
+  thumbnail: string;
 
   product: Product;
 
