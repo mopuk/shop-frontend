@@ -1,9 +1,13 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import FeaturedCard from "./FeaturedCard";
+import Link from "next/link";
+import Image from "next/image";
+
+import { ProductVariant } from "@/app/catalog/components/CatalogList";
 
 export default function Featured() {
-  const { data, isLoading, error } = useQuery({
+  const { data, isPending, error } = useQuery({
     queryKey: ["featuredProducts"],
     queryFn: async () => {
       const response = await fetch(
@@ -13,7 +17,7 @@ export default function Featured() {
     },
   });
 
-  if (isLoading) {
+  if (isPending) {
     return (
       <div className="spinner-container">
         <div className="spinner"></div>
@@ -21,20 +25,38 @@ export default function Featured() {
     );
   }
 
-  console.log(data);
   if (error) return <div>{error.message}</div>;
 
   return (
-    <div className="px-55 py-4">
-      <h2 className="font-montserrat font-bold text-2xl">
-        Featured Collection
-      </h2>
-      <div className="bg-primary w-16 h-2 rounded-xl"></div>
-      <div className="grid grid-cols-3 gap-10 mt-6 text-center"></div>
+    <div className="w-full px-55 py-4">
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="font-montserrat font-bold text-2xl">Featured Items</h2>
+          <div className="bg-primary w-16 h-2 rounded-xl"></div>
+        </div>
+        <Link
+          href="/catalog"
+          className="flex gap-2 font-hanken text-neutral text-sm"
+        >
+          View catalog
+          <Image
+            src="/images/right_arrow.svg"
+            alt="right arrow"
+            width={12}
+            height={12}
+          />{" "}
+        </Link>
+      </div>
+      <div className="grid grid-cols-3 gap-10 mt-6 text-center">
+        {data.variants.map((variant: ProductVariant) => (
+          <FeaturedCard
+            title={variant.product.name}
+            image_url={variant.thumbnail}
+            slug={variant.product.slug}
+            variant_id={variant.id}
+          />
+        ))}
+      </div>
     </div>
   );
 }
-
-/*{data.map((variant) => (
-          <FeaturedCard title={variant.product.name} url={variant.thumbnail} />
-        ))}*/

@@ -1,7 +1,12 @@
+import Link from "next/link";
+
 export default function BrandCard({ title }: { title: string }) {
   return (
-    <div className="bg-green-200 font-montserrat font-semibold text-neutral text-xl py-7 rounded-xl">
+    <Link
+      href={`/catalog?brand=${title}`}
+      className="bg-green-200 font-montserrat font-semibold text-neutral text-xl py-7 rounded-xl"
+    >
       {title}
-    </div>
+    </Link>
   );
 }
