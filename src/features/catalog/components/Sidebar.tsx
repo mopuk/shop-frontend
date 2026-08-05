@@ -9,7 +9,7 @@ import {
   Color,
   Material,
   Size,
-} from "../types";
+} from "@/src/types";
 
 export default function Sidebar() {
   const {
