@@ -1,5 +1,6 @@
-"use client"
-import { Product, ProductVariant } from "@/app/catalog/components/CatalogList";
+"use client";
+
+import { Product, ProductVariant } from "@/app/catalog/types";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -11,7 +12,7 @@ export default function ProductClient({
   variant: ProductVariant;
 }) {
   const router = useRouter();
-  console.log(variant)
+  console.log(variant);
   return (
     <div>
       <div>
