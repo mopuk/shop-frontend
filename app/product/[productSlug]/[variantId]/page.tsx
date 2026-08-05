@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
-import { Product, ProductVariant } from "../../../catalog/components/CatalogList";
+
 import ProductClient from "./components/ProductClient";
+import { Product, ProductVariant } from "@/app/catalog/types";
 
 export default async function Page({
   params,
