@@ -1,7 +1,3 @@
-export interface SelectedFilters {
-  categories: string[];
-  brands: string[];
-  colors: string[];
-  materials: string[];
-  sizes: string[];
-}
+import { SelectedProductFilters } from "@/src/shared/lib/types";
+
+export type FiltersList = SelectedProductFilters;
