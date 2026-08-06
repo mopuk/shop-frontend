@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import ProductClient from "@/src/features/product/components/ProductClient";
-import { Product, ProductVariant } from "@/src/shared/lib/types";
+import { Product, ProductVariant } from "@/src/types";
 
 export default async function Page({
   params,
