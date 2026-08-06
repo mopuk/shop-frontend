@@ -1,45 +1,37 @@
-import { useState } from "react";
-import { SelectedFilters } from "./types";
+import { parseFilters } from "@/src/shared/lib/parse-filters";
+import { SelectedProductFilters } from "@/src/shared/lib/types";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function useFilters() {
-  const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({
-    categories: [],
-    brands: [],
-    colors: [],
-    materials: [],
-    sizes: [],
-  });
-
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
 
+  const selectedFilters: SelectedProductFilters = parseFilters(searchParams);
+
   const toggleFilter = (
-    type: keyof SelectedFilters,
+    type: keyof SelectedProductFilters,
     value: string,
     checked: boolean,
   ) => {
-    setSelectedFilters((prev) => ({
-      ...prev,
-      [type]: checked
-        ? [...prev[type], value]
-        : prev[type].filter((existing) => existing != value),
-    }));
-  };
-
-  const applyFilters = () => {
     const params = new URLSearchParams(searchParams.toString());
 
-    Object.entries(selectedFilters).forEach(([key, values]) => {
-      if (values.length == 0) {
-        params.delete(key);
-      } else {
-        params.set(key, values.join(","));
-      }
-    });
+    const values = params.getAll(type);
 
-    router.push(`${pathName}?${params.toString()}`);
+    const updated = checked
+      ? [...new Set([...values, value])]
+      : values.filter((v) => v !== value);
+
+    params.delete(type);
+
+    if (updated.length > 0) {
+      updated.forEach((value) => {
+        params.append(type, value);
+      });
+    } else {
+      params.delete(type);
+    }
+    router.replace(`${pathName}?${params.toString()}`);
   };
 
   const clearFilters = () => {
@@ -49,7 +41,6 @@ export default function useFilters() {
   return {
     selectedFilters,
     toggleFilter,
-    applyFilters,
     clearFilters,
   };
 }
