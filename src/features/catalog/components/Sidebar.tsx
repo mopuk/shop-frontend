@@ -11,13 +11,17 @@ import {
   Size,
 } from "@/src/types";
 import { Checkbox } from "@/src/components/ui/checkbox";
-import {
-  Field,
-  FieldContent,
-  FieldGroup,
-  FieldLabel,
-} from "@/src/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/src/components/ui/field";
 import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox";
+import { useState } from "react";
+
+interface SelectedFilters {
+  categories: string[];
+  brands: string[];
+  colors: string[];
+  materials: string[];
+  sizes: string[];
+}
 
 export default function Sidebar() {
   const {
@@ -51,6 +55,25 @@ export default function Sidebar() {
     },
   });
 
+  const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({
+    categories: [],
+    brands: [],
+    colors: [],
+    materials: [],
+    sizes: [],
+  });
+
+  const handleOnCheck = (type: keyof SelectedFilters, slug: string) => {
+    setSelectedFilters((prev) => ({
+      ...prev,
+      [type]: prev[type].includes(slug) // Check if id is already in filters
+        ? prev[type].filter((existing) => existing !== slug) // Exclude id if exists
+        : [...prev[type], slug], // Add id
+    }));
+  };
+
+  console.log(selectedFilters);
+
   if (isFiltersPending || isCategoriesPending)
     return (
       <div className="spinner-container">
@@ -81,6 +104,9 @@ export default function Sidebar() {
                     id={`category-${category.id}`}
                     name="categories"
                     value={String(category.id)}
+                    onCheckedChange={(e) =>
+                      handleOnCheck("categories", String(category.slug))
+                    }
                   />
 
                   <FieldLabel
@@ -104,6 +130,9 @@ export default function Sidebar() {
                     id={`brand-${brand.id}`}
                     name="brands"
                     value={String(brand.id)}
+                    onCheckedChange={(e) =>
+                      handleOnCheck("brands", String(brand.slug))
+                    }
                   />
 
                   <FieldLabel
