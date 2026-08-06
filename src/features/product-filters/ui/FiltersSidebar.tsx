@@ -1,78 +1,28 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import {
-  Brand,
-  CategoriesList,
-  Category,
-  FiltersList,
-  Color,
-  Material,
-  Size,
-} from "@/src/types";
+import { Brand, Category, Color, Material, Size } from "@/src/types";
 import { Checkbox } from "@/src/components/ui/checkbox";
 import { Field, FieldGroup, FieldLabel } from "@/src/components/ui/field";
 import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox";
-import { useState } from "react";
-
-interface SelectedFilters {
-  categories: string[];
-  brands: string[];
-  colors: string[];
-  materials: string[];
-  sizes: string[];
-}
+import { Button } from "@/src/components/ui/button";
+import useCategoriesQuery from "@/src/entities/category/api/use-categories";
+import useFilters from "../model/use-filters";
+import useProductFiltersQuery from "@/src/entities/product/api/use-product-filters";
 
 export default function Sidebar() {
   const {
-    data: filters,
+    filters,
     isPending: isFiltersPending,
     error: filtersError,
-  } = useQuery({
-    queryKey: ["filters"],
-    queryFn: async (): Promise<FiltersList> => {
-      const response = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_API + "/api/v1/products/filters",
-      );
-
-      if (!response.ok) throw new Error("Failed to fetch filters");
-      return await response.json();
-    },
-  });
-
+  } = useProductFiltersQuery();
   const {
-    data: categories,
+    categories,
     isPending: isCategoriesPending,
     error: categoriesError,
-  } = useQuery({
-    queryKey: ["categories"],
-    queryFn: async (): Promise<CategoriesList> => {
-      const response = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_API + "/api/v1/categories",
-      );
-      if (!response.ok) throw new Error("Failed to fetch filters");
-      return await response.json();
-    },
-  });
+  } = useCategoriesQuery();
 
-  const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({
-    categories: [],
-    brands: [],
-    colors: [],
-    materials: [],
-    sizes: [],
-  });
-
-  const handleOnCheck = (type: keyof SelectedFilters, slug: string) => {
-    setSelectedFilters((prev) => ({
-      ...prev,
-      [type]: prev[type].includes(slug) // Check if id is already in filters
-        ? prev[type].filter((existing) => existing !== slug) // Exclude id if exists
-        : [...prev[type], slug], // Add id
-    }));
-  };
-
-  console.log(selectedFilters);
+  const { selectedFilters, toggleFilter, applyFilters, clearFilters } =
+    useFilters();
 
   if (isFiltersPending || isCategoriesPending)
     return (
@@ -92,7 +42,11 @@ export default function Sidebar() {
         Filters
       </h2>
       <div className="bg-[#F3F3F6] p-6 rounded-lg">
-        <form action="" className="flex flex-col gap-2">
+        <form
+          action=""
+          className="flex flex-col gap-2"
+          onSubmit={(e) => e.preventDefault()}
+        >
           <div>
             <h3 className="font-hanken font-semibold text-xs text-neutral mb-3">
               Categories
@@ -103,9 +57,9 @@ export default function Sidebar() {
                   <Checkbox
                     id={`category-${category.id}`}
                     name="categories"
-                    value={String(category.id)}
-                    onCheckedChange={(e) =>
-                      handleOnCheck("categories", String(category.slug))
+                    checked={selectedFilters.categories.includes(category.slug)}
+                    onCheckedChange={(checked) =>
+                      toggleFilter("categories", category.slug, checked)
                     }
                   />
 
@@ -130,8 +84,8 @@ export default function Sidebar() {
                     id={`brand-${brand.id}`}
                     name="brands"
                     value={String(brand.id)}
-                    onCheckedChange={(e) =>
-                      handleOnCheck("brands", String(brand.slug))
+                    onCheckedChange={(checked) =>
+                      toggleFilter("brands", brand.slug, checked)
                     }
                   />
 
@@ -148,28 +102,56 @@ export default function Sidebar() {
 
           <div>
             <h3 className="font-hanken font-semibold text-xs text-neutral mb-3">
-              Sizes
+              Materials
             </h3>
-            <FieldGroup className="grid grid-cols-3 pl-5">
-              {filters.sizes.map((size: Size) => (
-                <Field key={size.id} className="w-12 h-8">
+            <FieldGroup className="">
+              {filters.materials.map((material: Material) => (
+                <Field key={material.id} orientation="horizontal">
                   <Checkbox
-                    id={`size-${size.id}`}
-                    aria-label={size.name}
-                    className={`w-full h-full`}
+                    id={`material-${material.id}`}
+                    name="materials"
+                    value={String(material.id)}
+                    onCheckedChange={(checked) =>
+                      toggleFilter("materials", material.slug, checked)
+                    }
                   />
+
+                  <FieldLabel
+                    htmlFor={`material-${material.id}`}
+                    className="font-hanken text-xs text-neutral"
+                  >
+                    {material.name}
+                  </FieldLabel>
                 </Field>
               ))}
             </FieldGroup>
           </div>
           <div>
             <h3 className="font-hanken font-semibold text-xs text-neutral mb-3">
-              Materials
+              Sizes
             </h3>
-            <FieldGroup className="grid grid-cols-3 pl-5">
-              {filters.materials.map((material: Material) => (
-                <Field key={material.id}>
-                  <Checkbox id={`material-${material.id}`} />
+            <FieldGroup className="flex-row flex-wrap">
+              {filters.sizes.map((size: Size) => (
+                <Field key={size.id} className="w-16 h-10">
+                  <FieldLabel
+                    htmlFor={`size-${size.id}`}
+                    className="relative  size-full cursor-pointer"
+                  >
+                    <CheckboxPrimitive.Root
+                      id={`size-${size.id}`}
+                      name="sizes"
+                      checked={selectedFilters.sizes.includes(size.name)}
+                      className="absolute inset-0 opacity-0"
+                      onCheckedChange={(checked) =>
+                        toggleFilter("sizes", size.name, checked)
+                      }
+                    />
+                    <div
+                      className={`size-full flex justify-center items-center font-hanken text-xs text-neutral rounded-md border-2 bg-[#E2E2E5] ${selectedFilters.sizes.includes(size.name) ? "border-primary" : "border-transparent"}`}
+                    >
+                      {size.name}
+                    </div>
+                  </FieldLabel>
                 </Field>
               ))}
             </FieldGroup>
@@ -178,19 +160,22 @@ export default function Sidebar() {
             <h3 className="font-hanken font-semibold text-xs text-neutral mb-3">
               Colors
             </h3>
-            <FieldGroup className="grid grid-cols-3 pl-5">
+            <FieldGroup className="flex-row flex-wrap">
               {filters.colors.map((color: Color) => (
                 <Field key={color.id} className="w-12 h-12">
                   <FieldLabel className="relative block size-12 cursor-pointer">
                     <CheckboxPrimitive.Root
                       id={`color-${color.id}`}
                       name="colors"
-                      value={String(color.id)}
-                      className="peer absolute inset-0 opacity-0"
+                      checked={selectedFilters.colors.includes(color.slug)}
+                      onCheckedChange={(checked) =>
+                        toggleFilter("colors", color.slug, checked)
+                      }
+                      className="absolute inset-0 opacity-0"
                     />
 
                     <div
-                      className="size-full rounded-md border-2 border-transparent peer-data-[state=checked]:border-black peer-focus-visible:ring-2"
+                      className={`size-full rounded-lg border-3 ${selectedFilters.colors.includes(color.slug) ? "border-primary" : "border-transparent"}`}
                       style={{ backgroundColor: color.hex_code }}
                     />
                   </FieldLabel>
@@ -198,6 +183,12 @@ export default function Sidebar() {
               ))}
             </FieldGroup>
           </div>
+          <Button
+            type="submit"
+            className="bg-primary px-4 py-2 w-full h-16 font-hanken text-lg text-white"
+          >
+            Apply
+          </Button>
         </form>
       </div>
     </div>
