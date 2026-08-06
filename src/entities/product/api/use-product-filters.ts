@@ -1,4 +1,4 @@
-import { FiltersList } from "@/src/types";
+import { ProductFilterOptions } from "@/src/shared/lib/types";
 import { useQuery } from "@tanstack/react-query";
 
 export default function useProductFiltersQuery() {
@@ -8,7 +8,7 @@ export default function useProductFiltersQuery() {
     error,
   } = useQuery({
     queryKey: ["filters"],
-    queryFn: async (): Promise<FiltersList> => {
+    queryFn: async (): Promise<ProductFilterOptions> => {
       const response = await fetch(
         process.env.NEXT_PUBLIC_BACKEND_API + "/api/v1/products/filters",
       );
