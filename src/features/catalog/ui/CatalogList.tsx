@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ProductVariant } from "@/src/types.ts";
+import { ProductVariant } from "@/src/entities/product//model/types";
 import useProductVariantsQuery from "@/src/entities/product/api/use-products";
 
 export default function CatalogList() {
@@ -20,7 +20,7 @@ export default function CatalogList() {
       </div>
     );
   if (error) return <div>{error.message}</div>;
-  console.log(variants);
+
   return (
     <ul className="grid grid-cols-2 xl:grid-cols-3">
       {variants.variants.map((productVariant: ProductVariant) => {
