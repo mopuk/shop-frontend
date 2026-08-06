@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import ProductClient from "@/src/features/product/components/ProductClient";
-import { Product, ProductVariant } from "@/src/types.ts";
+import { Product, ProductVariant } from "@/src/types";
 
 export default async function Page({
   params,
@@ -17,9 +17,9 @@ export default async function Page({
   if (!res.ok) return notFound();
 
   const { product }: { product: Product } = await res.json();
-  console.log(product);
+
   const variant: ProductVariant | undefined = product?.variants.find(
-    (v) => v.id == Number(variantId),
+    (v) => v.id === Number(variantId),
   );
 
   if (!variant) return notFound();

@@ -1,11 +1,16 @@
-import CatalogList from "@/src/features/catalog/components/CatalogList";
-import Sidebar from "@/src/features/catalog/components/Sidebar";
+import CatalogList from "@/src/features/catalog/ui/CatalogList";
+import FiltersSidebar from "@/src/features/product-filters/ui/FiltersSidebar";
+import { Suspense } from "react";
 
 export default async function page() {
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-[1fr_2fr]">
-      <Sidebar />
-      <CatalogList />
+    <div className="min-h-screen px-10 grid grid-cols-1 xl:grid-cols-[1fr_3fr]">
+      <Suspense fallback={<div>Loading...</div>}>
+        <FiltersSidebar />
+      </Suspense>
+      <Suspense fallback={<div>Loading...</div>}>
+        <CatalogList />
+      </Suspense>
     </div>
   );
 }

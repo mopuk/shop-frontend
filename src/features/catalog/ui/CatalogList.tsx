@@ -1,9 +1,9 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ProductVariant } from "@/src/types.ts";
+import { ProductVariant } from "@/src/entities/product//model/types";
+import useProductVariantsQuery from "@/src/entities/product/api/use-products";
 
 export default function CatalogList() {
   const router = useRouter();
@@ -11,21 +11,9 @@ export default function CatalogList() {
     router.push(`/product/${slug}/${variantId} `);
   };
 
-  const {
-    data: productVariants,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["product_variants"],
-    queryFn: async () => {
-      const response = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_API + "/api/v1/products",
-      );
-      return await response.json();
-    },
-  });
+  const { data: variants, isPending, error } = useProductVariantsQuery();
 
-  if (isLoading)
+  if (isPending)
     return (
       <div className="spinner-container">
         <div className="spinner"></div>
@@ -35,7 +23,7 @@ export default function CatalogList() {
 
   return (
     <ul className="grid grid-cols-2 xl:grid-cols-3">
-      {productVariants.variants.map((productVariant: ProductVariant) => {
+      {variants.variants.map((productVariant: ProductVariant) => {
         const imageURL = productVariant.images?.[0]?.url
           ? process.env.NEXT_PUBLIC_BACKEND_API +
             "/static/images/" +
