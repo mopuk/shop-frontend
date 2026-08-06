@@ -8,7 +8,9 @@ export default async function page() {
       <Suspense fallback={<div>Loading...</div>}>
         <FiltersSidebar />
       </Suspense>
-      <CatalogList />
+      <Suspense fallback={<div>Loading...</div>}>
+        <CatalogList />
+      </Suspense>
     </div>
   );
 }
