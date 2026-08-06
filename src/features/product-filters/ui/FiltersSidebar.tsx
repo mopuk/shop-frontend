@@ -21,8 +21,7 @@ export default function Sidebar() {
     error: categoriesError,
   } = useCategoriesQuery();
 
-  const { selectedFilters, toggleFilter, applyFilters, clearFilters } =
-    useFilters();
+  const { selectedFilters, toggleFilter, clearFilters } = useFilters();
 
   if (isFiltersPending || isCategoriesPending)
     return (
