@@ -10,6 +10,7 @@ export function parseFilters(
     colors: searchParams.getAll("colors"),
     materials: searchParams.getAll("materials"),
     sizes: searchParams.getAll("sizes"),
+    sort: searchParams.get("sort") ?? "newest",
   };
 
   return selectedFilters;
