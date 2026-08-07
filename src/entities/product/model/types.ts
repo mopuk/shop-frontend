@@ -31,7 +31,7 @@ export type Product = {
 
 export type ProductVariant = {
   id: number;
-  price: number;
+  variant_price: number;
   stock: number;
   is_available: boolean;
   thumbnail: string;

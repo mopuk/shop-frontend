@@ -49,7 +49,7 @@ export default function CatalogList() {
       </div>
     );
   if (error) return <div>{error.message}</div>;
-
+  console.log(variants);
   return (
     <div>
       <div className="flex justify-between items-center py-4">
@@ -71,7 +71,7 @@ export default function CatalogList() {
           >
             <ComboboxInput
               placeholder="Select sorting option"
-              className="font-hanken text-black "
+              className="font-hanken text-black w-48"
             />
             <ComboboxContent>
               <ComboboxEmpty>No items found.</ComboboxEmpty>
@@ -86,7 +86,7 @@ export default function CatalogList() {
           </Combobox>
         </div>
       </div>
-      <ul className="grid grid-cols-2 xl:grid-cols-4 gap-2">
+      <ul className="grid grid-cols-2 xl:grid-cols-4 gap-2 justify-items-center">
         {variants.variants.map((productVariant: ProductVariant) => {
           const imageURL = productVariant.images?.[0]?.url
             ? process.env.NEXT_PUBLIC_BACKEND_API +
@@ -99,18 +99,33 @@ export default function CatalogList() {
               onClick={() =>
                 handleOnClick(productVariant.product.slug, productVariant.id)
               }
-              className="w-70 h-100 flex flex-col items-center gap-2 cursor-pointer bg-white shadow-md rounded-lg"
+              className="w-82 h-100 flex flex-col items-center gap-2 cursor-pointer bg-white shadow-md rounded-lg pb-4"
             >
               <Image
                 src={imageURL}
                 alt={productVariant.images[0].alt_text}
-                width={280}
+                width={328}
                 height={280}
+                className="mb-4"
                 style={{ objectFit: "cover" }}
                 unoptimized
               />
-              <h3>{productVariant.price}</h3>
-              <p>{productVariant.product.name}</p>
+              <div className="w-full flex justify-between items-center px-4">
+                <p className="font-montserrat text-sm text-black">
+                  {productVariant.product.name}
+                </p>
+                <h3 className="font-hanken text-sm text-primary">
+                  ${productVariant.variant_price}
+                </h3>
+              </div>
+              <div className="w-full flex justify-between items-center px-4 mt-auto">
+                <div className="font-hanken font-medium text-[16px]">
+                  {productVariant.product?.category?.name}
+                </div>
+                <div className="font-hanken font-medium text-[16px]">
+                  {productVariant.product?.brand?.name}
+                </div>
+              </div>
             </li>
           );
         })}
