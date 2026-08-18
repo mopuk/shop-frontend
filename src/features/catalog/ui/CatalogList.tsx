@@ -27,7 +27,7 @@ export default function CatalogList() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const handleOnClick = (slug: string, variantId: number) => {
-    router.push(`/product/${slug}/${variantId}`);
+    router.push(`/product/${slug}?variant=${variantId}`);
   };
 
   const { data: variants, isPending, error } = useProductVariantsQuery();
@@ -49,7 +49,7 @@ export default function CatalogList() {
       </div>
     );
   if (error) return <div>{error.message}</div>;
-  console.log(variants);
+
   return (
     <div>
       <div className="flex justify-between items-center py-4">
@@ -88,7 +88,7 @@ export default function CatalogList() {
       </div>
       <ul className="grid grid-cols-2 xl:grid-cols-4 gap-2 justify-items-center">
         {variants.variants.map((productVariant: ProductVariant) => {
-          const imageURL = productVariant.images?.[0]?.url
+          const imageURL = productVariant?.images?.[0]?.url
             ? process.env.NEXT_PUBLIC_BACKEND_API +
               "/static/images/" +
               productVariant.images[0].url
@@ -103,7 +103,7 @@ export default function CatalogList() {
             >
               <Image
                 src={imageURL}
-                alt={productVariant.images[0].alt_text}
+                alt={productVariant?.images[0]?.alt_text}
                 width={328}
                 height={280}
                 className="mb-4"
