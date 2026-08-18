@@ -25,7 +25,15 @@ export type Product = {
 
   brand: Brand | null;
   category: Category | null;
+};
 
+export type ProductPageData = {
+  product: Product;
+  variants: ProductVariant[];
+  selectedVariant: ProductVariant;
+};
+
+export type ProductWithVariants = Product & {
   variants: ProductVariant[];
 };
 
@@ -34,10 +42,7 @@ export type ProductVariant = {
   variant_price: number;
   stock: number;
   is_available: boolean;
-  thumbnail: string;
-
-  product: Product;
-
+  thumbnail: string | null;
   color: Color;
   size: Size;
   material: Material;
