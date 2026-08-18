@@ -1,25 +1,22 @@
-import { notFound } from "next/navigation";
-import { ProductPageData, ProductWithVariants } from "../model/types";
+"use client";
 
-export default async function getProduct(
-  productSlug: string,
-  variantId: string,
-): Promise<ProductPageData> {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_API}/api/v1/products/${productSlug}`,
-  );
+import {
+  parseFilters,
+  SearchParamsInput,
+} from "@/src/shared/lib/parse-filters";
+import { ProductVariantListResponse } from "../model/types";
+import { useQuery } from "@tanstack/react-query";
 
-  if (!res.ok) return notFound();
+export default function getProductVariants(searchParams: SearchParamsInput) {
+  const filters = parseFilters(searchParams);
 
-  const product: ProductWithVariants = await res.json();
-
-  const selectedVariant = product.variants.find(
-    (v) => v.id === Number(variantId),
-  );
-
-  if (!selectedVariant) return notFound();
-
-  const variants = product.variants;
-
-  return { product, variants, selectedVariant };
+  return useQuery({
+    queryKey: ["product_variants", filters],
+    queryFn: async (): Promise<ProductVariantListResponse> => {
+      const response = await fetch(`
+        ${process.env.NEXT_PUBLIC_BACKEND_API}/api/v1/products?${searchParams?.toString()}
+      `);
+      return await response.json();
+    },
+  });
 }

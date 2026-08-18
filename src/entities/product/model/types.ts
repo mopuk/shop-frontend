@@ -68,6 +68,10 @@ export type Color = {
   slug: string;
 };
 
-export interface ProductVariantListResponse {
-  variants: ProductVariant[];
-}
+export type ProductVariantWithProduct = ProductVariant & {
+  product: Product;
+};
+
+export type ProductVariantListResponse = {
+  variants: ProductVariantWithProduct[];
+};

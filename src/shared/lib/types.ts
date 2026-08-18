@@ -25,4 +25,4 @@ export interface ProductFilterOptions {
   sizes: Size[];
 }
 
-export type { Product, ProductVariant };
+export type { Product, ProductVariant, Material, Size, Color };

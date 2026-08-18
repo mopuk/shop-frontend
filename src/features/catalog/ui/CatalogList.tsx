@@ -1,9 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
-import { ProductVariant } from "@/src/entities/product//model/types";
-import useProductVariantsQuery from "@/src/entities/product/api/use-products";
+import { useRouter } from "next/navigation";
+import { ProductVariantWithProduct } from "@/src/entities/product//model/types";
 import {
   Combobox,
   ComboboxContent,
@@ -13,7 +12,11 @@ import {
   ComboboxList,
 } from "@/src/components/ui/combobox";
 
-import { parseFilters } from "@/src/shared/lib/parse-filters";
+import {
+  parseFilters,
+  SearchParamsInput,
+} from "@/src/shared/lib/parse-filters";
+import getProductVariants from "@/src/entities/product/api/getProducts";
 
 const sortingOptions = [
   { value: "newest", label: "Newest Arrivals" },
@@ -23,21 +26,24 @@ const sortingOptions = [
   { value: "name_desc", label: "Name: Z-A" },
 ];
 
-export default function CatalogList() {
-  const searchParams = useSearchParams();
+export default function CatalogList({
+  searchParams,
+}: {
+  searchParams: SearchParamsInput;
+}) {
   const router = useRouter();
   const handleOnClick = (slug: string, variantId: number) => {
     router.push(`/product/${slug}?variant=${variantId}`);
   };
 
-  const { data: variants, isPending, error } = useProductVariantsQuery();
+  const { data: variants, isPending, error } = getProductVariants(searchParams);
 
   const sortingOption: string = parseFilters(searchParams).sort;
 
   const handleOnSortingChange = (value: string) => {
     if (value === sortingOption) return;
 
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams?.toString());
     params.set("sort", value);
     router.replace(`?${params.toString()}`);
   };
@@ -87,7 +93,7 @@ export default function CatalogList() {
         </div>
       </div>
       <ul className="grid grid-cols-2 xl:grid-cols-4 gap-2 justify-items-center">
-        {variants.variants.map((productVariant: ProductVariant) => {
+        {variants.variants.map((productVariant: ProductVariantWithProduct) => {
           const imageURL = productVariant?.images?.[0]?.url
             ? process.env.NEXT_PUBLIC_BACKEND_API +
               "/static/images/" +
