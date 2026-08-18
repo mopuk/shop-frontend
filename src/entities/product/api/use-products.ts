@@ -11,7 +11,7 @@ export default function useProductVariantsQuery() {
     queryKey: ["product_variants", filters],
     queryFn: async (): Promise<ProductVariantListResponse> => {
       const response = await fetch(`
-        ${process.env.NEXT_PUBLIC_BACKEND_API}/api/v1/products?${searchParams.toString()}}
+        ${process.env.NEXT_PUBLIC_BACKEND_API}/api/v1/products?${searchParams.toString()}
       `);
       return await response.json();
     },
