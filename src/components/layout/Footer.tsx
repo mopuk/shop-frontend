@@ -8,7 +8,7 @@ export default function Footer() {
         <Link href="/">
           <Image src={"/images/Logo.svg"} alt="Logo" height={32} width={160} />
         </Link>
-        <p className="font-hanken text-neutral font-xs mt-4">
+        <p className="font-hanken text-neutral text-xs mt-4">
           © 2024 Project Archives. All rights reserved.
         </p>
       </div>

@@ -54,3 +54,26 @@ function getStringParam(
   if (!v) return undefined;
   return Array.isArray(v) ? String(v[0]) : String(v);
 }
+
+export function toURLSearchParams(params: SearchParamsInput) {
+  if (!params) return new URLSearchParams();
+
+  if (
+    params instanceof URLSearchParams ||
+    params instanceof ReadonlyURLSearchParams
+  )
+    return new URLSearchParams(params.toString());
+
+  const searchParams = new URLSearchParams();
+
+  for (const [key, value] of Object.entries(params)) {
+    if (Array.isArray(value)) {
+      value.forEach((item) => {
+        searchParams.append(key, item);
+      });
+    } else if (value !== undefined) {
+      searchParams.set(key, value);
+    }
+  }
+  return searchParams;
+}

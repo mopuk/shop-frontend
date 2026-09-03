@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ProductVariantWithProduct } from "@/src/entities/product//model/types";
+import { ProductVariantWithProduct } from "@/src/entities/product/model/types";
 import {
   Combobox,
   ComboboxContent,
@@ -15,6 +15,7 @@ import {
 import {
   parseFilters,
   SearchParamsInput,
+  toURLSearchParams,
 } from "@/src/shared/lib/parse-filters";
 import getProductVariants from "@/src/entities/product/api/getProducts";
 
@@ -43,7 +44,9 @@ export default function CatalogList({
   const handleOnSortingChange = (value: string) => {
     if (value === sortingOption) return;
 
-    const params = new URLSearchParams(searchParams?.toString());
+    const params = new URLSearchParams(
+      toURLSearchParams(searchParams)?.toString(),
+    );
     params.set("sort", value);
     router.replace(`?${params.toString()}`);
   };

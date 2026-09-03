@@ -1,3 +1,5 @@
+"use client";
+
 import { parseFilters } from "@/src/shared/lib/parse-filters";
 import { SelectedProductFilters } from "@/src/shared/lib/types";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -31,11 +33,11 @@ export default function useFilters() {
     } else {
       params.delete(type);
     }
-    router.replace(`${pathName}?${params.toString()}`);
+    router.replace(`${pathName}?${params.toString()}`, { scroll: false });
   };
 
   const clearFilters = () => {
-    router.push(`${pathName}`);
+    router.push(`${pathName}`, { scroll: false });
   };
 
   return {

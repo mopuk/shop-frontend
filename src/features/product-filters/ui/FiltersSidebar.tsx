@@ -6,7 +6,5 @@ export default async function Sidebar() {
   const filters = await getProductFilters();
   const categories = await getCategories();
 
-  console.log("2", categories, filters);
-
   return <FiltersSidebarClient filters={filters} categories={categories} />;
 }

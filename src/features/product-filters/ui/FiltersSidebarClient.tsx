@@ -110,7 +110,6 @@ export default function FiltersSidebarClient({
   filters: ProductFilterOptions;
   categories: CategoriesListResponse;
 }) {
-  console.log("1", filters, categories);
   const { selectedFilters, toggleFilter, clearFilters } = useFilters();
   return (
     <div className="m-6">
