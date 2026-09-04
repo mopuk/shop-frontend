@@ -17,7 +17,7 @@ import {
   SearchParamsInput,
   toURLSearchParams,
 } from "@/src/shared/lib/parse-filters";
-import getProductVariants from "@/src/entities/product/api/getProducts";
+import getProductVariants from "@/src/entities/product/api/useProducts";
 
 const sortingOptions = [
   { value: "newest", label: "Newest Arrivals" },

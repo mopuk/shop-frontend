@@ -6,7 +6,7 @@ export default async function getProduct(
   variantId: string,
 ): Promise<ProductPageData> {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_API}/api/v1/products/${productSlug}`,
+    `${process.env.NEXT_PUBLIC_BACKEND_API}/api/v1/products/${encodeURIComponent(productSlug)}`,
   );
 
   if (!res.ok) return notFound();
