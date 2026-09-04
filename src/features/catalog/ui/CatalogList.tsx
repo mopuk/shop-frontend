@@ -2,16 +2,53 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ProductVariant } from "@/src/entities/product//model/types";
-import useProductVariantsQuery from "@/src/entities/product/api/use-products";
+import { ProductVariantWithProduct } from "@/src/entities/product/model/types";
+import useProductVariants from "@/src/entities/product/api/useProducts";
+import {
+  parseFilters,
+  SearchParamsInput,
+  toURLSearchParams,
+} from "@/src/shared/lib/parse-filters";
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/src/components/ui/combobox";
 
-export default function CatalogList() {
+const sortingOptions = [
+  { value: "newest", label: "Newest Arrivals" },
+  { value: "price_asc", label: "Price: Low to High" },
+  { value: "price_desc", label: "Price: High to Low" },
+  { value: "name_asc", label: "Name: A-Z" },
+  { value: "name_desc", label: "Name: Z-A" },
+];
+
+export default function CatalogList({
+  searchParams,
+}: {
+  searchParams: SearchParamsInput;
+}) {
   const router = useRouter();
   const handleOnClick = (slug: string, variantId: number) => {
-    router.push(`/product/${slug}/${variantId} `);
+    router.push(`/product/${slug}?variant=${variantId}`);
   };
 
-  const { data: variants, isPending, error } = useProductVariantsQuery();
+  const { data: variants, isPending, error } = useProductVariants(searchParams);
+
+  const sortingOption: string = parseFilters(searchParams).sort;
+
+  const handleOnSortingChange = (value: string) => {
+    if (value === sortingOption) return;
+
+    const params = new URLSearchParams(
+      toURLSearchParams(searchParams)?.toString(),
+    );
+    params.set("sort", value);
+    router.replace(`?${params.toString()}`);
+  };
 
   if (isPending)
     return (
@@ -58,11 +95,12 @@ export default function CatalogList() {
         </div>
       </div>
       <ul className="grid grid-cols-2 xl:grid-cols-4 gap-2 justify-items-center">
-        {variants.variants.map((productVariant: ProductVariant) => {
-          const imageURL = productVariant.images?.[0]?.url
+        {variants.variants.map((productVariant: ProductVariantWithProduct) => {
+          const image = productVariant.images?.[0];
+          const imageURL = image?.url
             ? process.env.NEXT_PUBLIC_BACKEND_API +
               "/static/images/" +
-              productVariant.images[0].url
+              image.url
             : "";
           return (
             <li
@@ -70,12 +108,12 @@ export default function CatalogList() {
               onClick={() =>
                 handleOnClick(productVariant.product.slug, productVariant.id)
               }
-              className="w-82 h-100 flex flex-col items-center gap-2 cursor-pointer bg-white shadow-md rounded-lg pb-4"
+              className="relative w-82 h-100 flex flex-col items-center gap-2 cursor-pointer bg-white shadow-md rounded-lg pb-4"
             >
               {imageURL ? (
                 <Image
                   src={imageURL}
-                  alt={productVariant.images[0].alt_text}
+                  alt={image?.alt_text}
                   width={328}
                   height={280}
                   className="mb-4"
