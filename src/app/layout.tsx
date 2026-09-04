@@ -8,7 +8,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
-  variable: "--font-monstserrat",
+  variable: "--font-montserrat",
 });
 const hanken = Hanken_Grotesk({
   subsets: ["latin"],

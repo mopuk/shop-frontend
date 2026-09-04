@@ -1,46 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ProductVariant } from "@/src/entities/product//model/types";
 import useProductVariantsQuery from "@/src/entities/product/api/use-products";
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from "@/src/components/ui/combobox";
-
-import { parseFilters } from "@/src/shared/lib/parse-filters";
-
-const sortingOptions = [
-  { value: "newest", label: "Newest Arrivals" },
-  { value: "price_asc", label: "Price: Low to High" },
-  { value: "price_desc", label: "Price: High to Low" },
-  { value: "name_asc", label: "Name: A-Z" },
-  { value: "name_desc", label: "Name: Z-A" },
-];
 
 export default function CatalogList() {
-  const searchParams = useSearchParams();
   const router = useRouter();
   const handleOnClick = (slug: string, variantId: number) => {
-    router.push(`/product/${slug}/${variantId}`);
+    router.push(`/product/${slug}/${variantId} `);
   };
 
   const { data: variants, isPending, error } = useProductVariantsQuery();
-
-  const sortingOption: string = parseFilters(searchParams).sort;
-
-  const handleOnSortingChange = (value: string) => {
-    if (value === sortingOption) return;
-
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("sort", value);
-    router.replace(`?${params.toString()}`);
-  };
 
   if (isPending)
     return (
@@ -49,7 +20,7 @@ export default function CatalogList() {
       </div>
     );
   if (error) return <div>{error.message}</div>;
-  console.log(variants);
+
   return (
     <div>
       <div className="flex justify-between items-center py-4">
