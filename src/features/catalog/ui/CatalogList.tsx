@@ -101,15 +101,21 @@ export default function CatalogList() {
               }
               className="w-82 h-100 flex flex-col items-center gap-2 cursor-pointer bg-white shadow-md rounded-lg pb-4"
             >
-              <Image
-                src={imageURL}
-                alt={productVariant.images[0].alt_text}
-                width={328}
-                height={280}
-                className="mb-4"
-                style={{ objectFit: "cover" }}
-                unoptimized
-              />
+              {imageURL ? (
+                <Image
+                  src={imageURL}
+                  alt={productVariant.images[0].alt_text}
+                  width={328}
+                  height={280}
+                  className="mb-4"
+                  style={{ objectFit: "cover" }}
+                  unoptimized
+                />
+              ) : (
+                <div className="w-full h-72 absolute flex items-center justify-center from-neutral-100 to-neutral-200 bg-gradient-to-b">
+                  No image
+                </div>
+              )}
               <div className="w-full flex justify-between items-center px-4">
                 <p className="font-montserrat text-sm text-black">
                   {productVariant.product.name}
