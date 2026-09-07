@@ -33,6 +33,7 @@ export default function useFilters() {
     } else {
       params.delete(type);
     }
+    params.set("offset", "0");
     router.replace(`${pathName}?${params.toString()}`, { scroll: false });
   };
 

@@ -8,6 +8,7 @@ import useFilters from "../model/use-filters";
 import React, { ReactNode } from "react";
 import { CategoriesListResponse } from "@/src/entities/category/model/types";
 import { ProductFilterOptions } from "@/src/shared/lib/types";
+import { Button } from "@/src/components/ui/button";
 
 type CheckboxFilterKey = "categories" | "brands" | "materials";
 
@@ -114,7 +115,7 @@ export default function FiltersSidebarClient({
   return (
     <div className="m-6">
       <h2 className="font-hanken font-semibold text-sm text-primary ml-6 mb-2">
-        Filters
+        Фильтры
       </h2>
       <div className="bg-[#F3F3F6] p-6 rounded-lg">
         <form
@@ -123,7 +124,7 @@ export default function FiltersSidebarClient({
           onSubmit={(e) => e.preventDefault()}
         >
           <CheckboxFilterSection
-            title="Categories"
+            title="Категории"
             options={categories.categories}
             filterKey="categories"
             selectedValues={selectedFilters.categories}
@@ -131,7 +132,7 @@ export default function FiltersSidebarClient({
             onToggle={toggleFilter}
           />
           <CheckboxFilterSection
-            title="Brands"
+            title="Бренды"
             options={filters.brands}
             filterKey="brands"
             selectedValues={selectedFilters.brands}
@@ -139,7 +140,7 @@ export default function FiltersSidebarClient({
             onToggle={toggleFilter}
           />
           <CheckboxFilterSection
-            title="Materials"
+            title="Материалы"
             options={filters.materials}
             filterKey="materials"
             selectedValues={selectedFilters.materials}
@@ -147,7 +148,7 @@ export default function FiltersSidebarClient({
             onToggle={toggleFilter}
           />
 
-          <FilterSection title="Sizes" className="flex-row flex-wrap">
+          <FilterSection title="Размеры" className="flex-row flex-wrap">
             {filters.sizes.map((size: Size) => (
               <Field key={size.id} className="w-16 h-10">
                 <FieldLabel
@@ -173,7 +174,7 @@ export default function FiltersSidebarClient({
             ))}
           </FilterSection>
 
-          <FilterSection title="Colors" className="flex-row flex-wrap">
+          <FilterSection title="Цвета" className="flex-row flex-wrap">
             {filters.colors.map((color: Color) => (
               <Field key={color.id} className="w-12 h-12">
                 <FieldLabel className="relative block size-12 cursor-pointer">
@@ -195,6 +196,12 @@ export default function FiltersSidebarClient({
               </Field>
             ))}
           </FilterSection>
+          <Button
+            onClick={clearFilters}
+            className="font-hanken text-white mt-4 py-6 bg-primary hover:bg-primary/90"
+          >
+            Очистить фильтры
+          </Button>
         </form>
       </div>
     </div>
