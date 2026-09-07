@@ -1,17 +1,53 @@
 "use client";
 
-import Image from "next/image";
+import useProductVariants from "@/src/entities/product/api/useProducts";
+import { ProductVariantWithProduct } from "@/src/entities/product/model/types";
+import {
+  parseFilters,
+  SearchParamsInput,
+  toURLSearchParams,
+} from "@/src/shared/lib/parse-filters";
 import { useRouter } from "next/navigation";
-import { ProductVariant } from "@/src/entities/product//model/types";
-import useProductVariantsQuery from "@/src/entities/product/api/use-products";
+import CatalogHeader from "./CatalogHeader";
+import Pagination from "./Pagination";
+import ProductCard from "./ProductCard";
 
-export default function CatalogList() {
+export default function CatalogList({
+  searchParams,
+}: {
+  searchParams: SearchParamsInput;
+}) {
   const router = useRouter();
   const handleOnClick = (slug: string, variantId: number) => {
-    router.push(`/product/${slug}/${variantId} `);
+    router.push(`/product/${slug}?variant=${variantId}`);
   };
 
-  const { data: variants, isPending, error } = useProductVariantsQuery();
+  const { data, isPending, error } = useProductVariants(searchParams);
+
+  const sortingOption: string = parseFilters(searchParams).sort;
+  const numberOption: number = parseFilters(searchParams).limit;
+
+  const handleOnSortingChange = (value: string) => {
+    if (value === sortingOption) return;
+
+    const params = new URLSearchParams(
+      toURLSearchParams(searchParams)?.toString(),
+    );
+    params.set("sort", value);
+    params.set("offset", "0");
+    router.replace(`?${params.toString()}`);
+  };
+
+  const handleOnNumberChange = (value: number) => {
+    if (value === numberOption) return;
+
+    const params = new URLSearchParams(
+      toURLSearchParams(searchParams)?.toString(),
+    );
+    params.set("limit", String(value));
+    params.set("offset", "0");
+    router.replace(`?${params.toString()}`);
+  };
 
   if (isPending)
     return (
@@ -22,33 +58,26 @@ export default function CatalogList() {
   if (error) return <div>{error.message}</div>;
 
   return (
-    <ul className="grid grid-cols-2 xl:grid-cols-3">
-      {variants.variants.map((productVariant: ProductVariant) => {
-        const imageURL = productVariant.images?.[0]?.url
-          ? process.env.NEXT_PUBLIC_BACKEND_API +
-            "/static/images/" +
-            productVariant.images[0].url
-          : "";
-        return (
-          <li
-            key={productVariant.id}
-            onClick={() =>
-              handleOnClick(productVariant.product.slug, productVariant.id)
-            }
-          >
-            <Image
-              src={imageURL}
-              alt={productVariant.images[0].alt_text}
-              width={200}
-              height={175}
-              style={{ objectFit: "cover" }}
-              unoptimized
+    <div>
+      <CatalogHeader
+        dataLength={data?.pagination.total_items || 0}
+        sortingOption={sortingOption}
+        numberOption={numberOption}
+        handleOnSortingChange={handleOnSortingChange}
+        handleOnNumberChange={handleOnNumberChange}
+      />
+      <ul className="grid grid-cols-2 xl:grid-cols-4 gap-x-2 gap-y-4 justify-items-center">
+        {data?.variants.map((productVariant: ProductVariantWithProduct) => {
+          return (
+            <ProductCard
+              key={productVariant.id}
+              productVariant={productVariant}
+              onClick={handleOnClick}
             />
-            <h3>{productVariant.price}</h3>
-            <p>{productVariant.product.name}</p>
-          </li>
-        );
-      })}
-    </ul>
+          );
+        })}
+      </ul>
+      <Pagination pagination={data?.pagination} searchParams={searchParams} />
+    </div>
   );
 }

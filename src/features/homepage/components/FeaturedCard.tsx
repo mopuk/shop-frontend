@@ -10,14 +10,14 @@ export default function FeaturedCard({
   title: string;
   image_url: string;
   slug: string;
-  variant_id: Number;
+  variant_id: number;
 }) {
   return (
     <Link
       href={`/product/${slug}?variant=${variant_id}`}
       className="bg-green-200 font-montserrat font-semibold text-neutral text-xl py-7 rounded-xl"
     >
-      <Image src={image_url} alt={title}></Image>
+      <Image src={image_url} alt={title} width={100} height={50}></Image>
       {title}
     </Link>
   );

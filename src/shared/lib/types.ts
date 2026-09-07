@@ -1,6 +1,12 @@
 import { Brand } from "@/src/entities/brand/model/types";
 import { Category } from "@/src/entities/category/model/types";
-import type { Color, Material, Size, Product, ProductVariant } from "@/src/entities/product/model/types";
+import type {
+  Color,
+  Material,
+  Size,
+  Product,
+  ProductVariant,
+} from "@/src/entities/product/model/types";
 
 export interface SelectedProductFilters {
   categories: string[];
@@ -8,6 +14,9 @@ export interface SelectedProductFilters {
   colors: string[];
   materials: string[];
   sizes: string[];
+  sort: string;
+  limit: number;
+  offset: number;
 }
 
 export interface ProductFilterOptions {
@@ -18,4 +27,4 @@ export interface ProductFilterOptions {
   sizes: Size[];
 }
 
-export type { Product, ProductVariant };
+export type { Product, ProductVariant, Material, Size, Color };

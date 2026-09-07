@@ -3,8 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import FeaturedCard from "./FeaturedCard";
 import Link from "next/link";
 import Image from "next/image";
-
-import { ProductVariant } from "@/src/types.ts";
+import { ProductVariantWithProduct } from "@/src/entities/product/model/types";
 
 export default function Featured() {
   const { data, isPending, error } = useQuery({
@@ -48,12 +47,13 @@ export default function Featured() {
         </Link>
       </div>
       <div className="grid grid-cols-3 gap-10 mt-6 text-center">
-        {data.variants.map((variant: ProductVariant) => (
+        {data.variants.map((variant: ProductVariantWithProduct) => (
           <FeaturedCard
             title={variant.product.name}
-            image_url={variant.thumbnail}
+            image_url={variant.thumbnail ?? ""}
             slug={variant.product.slug}
             variant_id={variant.id}
+            key={variant.id}
           />
         ))}
       </div>
