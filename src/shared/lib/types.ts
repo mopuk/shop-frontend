@@ -15,6 +15,8 @@ export interface SelectedProductFilters {
   materials: string[];
   sizes: string[];
   sort: string;
+  limit: number;
+  offset: number;
 }
 
 export interface ProductFilterOptions {

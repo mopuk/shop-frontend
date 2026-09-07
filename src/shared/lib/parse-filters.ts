@@ -18,6 +18,8 @@ export function parseFilters(
     materials: getArrayParam(searchParams, "materials"),
     sizes: getArrayParam(searchParams, "sizes"),
     sort: getStringParam(searchParams, "sort") || "newest",
+    limit: Number(getStringParam(searchParams, "limit")) || 10,
+    offset: Number(getStringParam(searchParams, "offset")) || 0,
   };
 
   return selectedFilters;
@@ -26,7 +28,7 @@ export function parseFilters(
 function getArrayParam(params: SearchParamsInput, key: string): string[] {
   if (!params) return [];
 
-  const anyParams = params as any;
+  const anyParams = params;
   if (typeof anyParams.getAll === "function") {
     const vals = anyParams.getAll(key);
     return Array.isArray(vals) ? vals : vals ? [vals] : [];
@@ -44,7 +46,7 @@ function getStringParam(
 ): string | undefined {
   if (!params) return undefined;
 
-  const anyParams = params as any;
+  const anyParams = params;
   if (typeof anyParams.get === "function") {
     return anyParams.get(key) ?? undefined;
   }

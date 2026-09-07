@@ -72,6 +72,15 @@ export type ProductVariantWithProduct = ProductVariant & {
   product: Product;
 };
 
+export type Pagination = {
+  total_items: number;
+  total_pages: number;
+  current_page: number;
+  has_next: boolean;
+  has_previous: boolean;
+};
+
 export type ProductVariantListResponse = {
   variants: ProductVariantWithProduct[];
+  pagination: Pagination;
 };
