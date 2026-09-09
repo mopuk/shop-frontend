@@ -3,7 +3,6 @@ import Link from "next/link";
 
 export default function FeaturedCard({
   title,
-  image_url,
   slug,
   variant_id,
 }: {
@@ -15,9 +14,8 @@ export default function FeaturedCard({
   return (
     <Link
       href={`/product/${slug}?variant=${variant_id}`}
-      className="bg-green-200 font-montserrat font-semibold text-neutral text-xl py-7 rounded-xl"
+      className="bg-green-200 font-montserrat font-semibold text-neutral text-xl py-7 rounded-xl flex items-center justify-center text-center"
     >
-      <Image src={image_url} alt={title} width={100} height={50}></Image>
       {title}
     </Link>
   );

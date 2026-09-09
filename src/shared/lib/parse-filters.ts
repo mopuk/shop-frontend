@@ -8,6 +8,20 @@ export type SearchParamsInput =
   | URLSearchParams
   | undefined;
 
+export function filtersToURLSearchParams(
+  filters: SelectedProductFilters,
+): URLSearchParams {
+  const params = new URLSearchParams();
+  Object.entries(filters).forEach(([key, value]) => {
+    if (Array.isArray(value)) {
+      value.forEach((v) => params.append(key, v));
+    } else {
+      params.set(key, String(value));
+    }
+  });
+  return params;
+}
+
 export function parseFilters(
   searchParams: SearchParamsInput,
 ): SelectedProductFilters {

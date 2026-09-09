@@ -16,14 +16,6 @@ export default function Featured() {
     },
   });
 
-  if (isPending) {
-    return (
-      <div className="spinner-container">
-        <div className="spinner"></div>
-      </div>
-    );
-  }
-
   if (error) return <div>{error.message}</div>;
 
   return (
@@ -47,15 +39,28 @@ export default function Featured() {
         </Link>
       </div>
       <div className="grid grid-cols-3 gap-10 mt-6 text-center">
-        {data.variants.map((variant: ProductVariantWithProduct) => (
-          <FeaturedCard
-            title={variant.product.name}
-            image_url={variant.thumbnail ?? ""}
-            slug={variant.product.slug}
-            variant_id={variant.id}
-            key={variant.id}
-          />
-        ))}
+        {isPending
+          ? Array.from({ length: 3 }).map((_, index) => (
+              <div
+                key={index}
+                className="bg-green-200 font-montserrat font-semibold text-neutral text-xl py-7 rounded-xl flex items-center justify-center text-center"
+              >
+                <div className="spinner-container h-8">
+                  <div className="spinner h-8"></div>
+                </div>
+              </div>
+            ))
+          : data.variants
+              .slice(0, 3)
+              .map((variant: ProductVariantWithProduct) => (
+                <FeaturedCard
+                  title={variant.product.name}
+                  image_url={variant.thumbnail ?? ""}
+                  slug={variant.product.slug}
+                  variant_id={variant.id}
+                  key={variant.id}
+                />
+              ))}
       </div>
     </div>
   );

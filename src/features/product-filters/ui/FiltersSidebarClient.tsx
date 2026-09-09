@@ -5,7 +5,6 @@ import { Checkbox } from "@/src/components/ui/checkbox";
 import { Field, FieldGroup, FieldLabel } from "@/src/components/ui/field";
 import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox";
 import useFilters from "../model/use-filters";
-import React, { ReactNode } from "react";
 import { CategoriesListResponse } from "@/src/entities/category/model/types";
 import { ProductFilterOptions } from "@/src/shared/lib/types";
 import { Button } from "@/src/components/ui/button";

@@ -18,14 +18,16 @@ export default function CatalogList({
   searchParams: SearchParamsInput;
 }) {
   const router = useRouter();
+  const filters = parseFilters(searchParams);
+
+  const { data, isPending, error } = useProductVariants(filters);
+
+  const sortingOption: string = filters.sort;
+  const limitOption: number = filters.limit;
+
   const handleOnClick = (slug: string, variantId: number) => {
     router.push(`/product/${slug}?variant=${variantId}`);
   };
-
-  const { data, isPending, error } = useProductVariants(searchParams);
-
-  const sortingOption: string = parseFilters(searchParams).sort;
-  const numberOption: number = parseFilters(searchParams).limit;
 
   const handleOnSortingChange = (value: string) => {
     if (value === sortingOption) return;
@@ -38,8 +40,8 @@ export default function CatalogList({
     router.replace(`?${params.toString()}`);
   };
 
-  const handleOnNumberChange = (value: number) => {
-    if (value === numberOption) return;
+  const handleOnLimitChange = (value: number) => {
+    if (value === limitOption) return;
 
     const params = new URLSearchParams(
       toURLSearchParams(searchParams)?.toString(),
@@ -62,9 +64,9 @@ export default function CatalogList({
       <CatalogHeader
         dataLength={data?.pagination.total_items || 0}
         sortingOption={sortingOption}
-        numberOption={numberOption}
+        limitOption={limitOption}
         handleOnSortingChange={handleOnSortingChange}
-        handleOnNumberChange={handleOnNumberChange}
+        handleOnLimitChange={handleOnLimitChange}
       />
       <ul className="grid grid-cols-2 xl:grid-cols-4 gap-x-2 gap-y-4 justify-items-center">
         {data?.variants.map((productVariant: ProductVariantWithProduct) => {
