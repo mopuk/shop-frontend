@@ -15,7 +15,7 @@ const sortingOptions = [
   { value: "name_desc", label: "Название: Я-А" },
 ];
 
-const numberOptions = [
+const limitOptions = [
   { value: 10, label: "10" },
   { value: 20, label: "20" },
   { value: 50, label: "50" },
@@ -24,15 +24,15 @@ const numberOptions = [
 export default function CatalogHeader({
   dataLength,
   sortingOption,
-  numberOption,
+  limitOption,
   handleOnSortingChange,
-  handleOnNumberChange,
+  handleOnLimitChange,
 }: {
   dataLength: number;
   sortingOption: string;
-  numberOption: number;
+  limitOption: number;
   handleOnSortingChange: (value: string) => void;
-  handleOnNumberChange: (value: number) => void;
+  handleOnLimitChange: (value: number) => void;
 }) {
   return (
     <div className="flex justify-between items-center py-4">
@@ -42,14 +42,13 @@ export default function CatalogHeader({
       <div className="flex items-center gap-2">
         <span className="font-hanken text-neutral ">Товаров на странице: </span>
         <Combobox
-          items={numberOptions}
+          items={limitOptions}
           itemToStringValue={(item) => item.label}
           value={
-            numberOptions.find((option) => option.value === numberOption) ??
-            null
+            limitOptions.find((option) => option.value === limitOption) ?? null
           }
           onValueChange={(item) => {
-            if (item) handleOnNumberChange(item?.value);
+            if (item) handleOnLimitChange(item?.value);
           }}
         >
           <ComboboxInput

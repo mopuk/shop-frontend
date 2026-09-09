@@ -22,10 +22,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn(montserrat.variable, hanken.variable)}>
-      <body className="min-h-full">
+      <body className="flex min-h-screen flex-col">
         <Providers>
           <Header />
-          {children}
+          <main className="flex-1">{children}</main>
           <Footer />
         </Providers>
         <SpeedInsights />

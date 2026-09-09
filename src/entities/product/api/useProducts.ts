@@ -1,14 +1,12 @@
 "use client";
 
-import {
-  SearchParamsInput,
-  toURLSearchParams,
-} from "@/src/shared/lib/parse-filters";
+import { filtersToURLSearchParams } from "@/src/shared/lib/parse-filters";
 import { ProductVariantListResponse } from "../model/types";
 import { useQuery } from "@tanstack/react-query";
+import { SelectedProductFilters } from "@/src/shared/lib/types";
 
-export default function useProductVariants(searchParams: SearchParamsInput) {
-  const queryString = toURLSearchParams(searchParams).toString();
+export default function useProductVariants(filters: SelectedProductFilters) {
+  const queryString = filtersToURLSearchParams(filters).toString();
 
   return useQuery({
     queryKey: ["product_variants", queryString],

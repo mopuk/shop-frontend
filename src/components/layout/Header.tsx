@@ -1,8 +1,12 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import useAuth from "@/src/features/auth/model/useAuth";
 
 export default function Header() {
+  const { user, isAuthenticated, isLoading } = useAuth();
+
   return (
     <header className="flex items-center w-full py-4 px-55 font-montserrat ">
       <nav className="w-screen flex justify-between items-center">
@@ -31,6 +35,16 @@ export default function Header() {
               />
             </Button>
           </Link>
+          {isAuthenticated ? (
+            <Link
+              href="/me"
+              className="w-8 h-8 rounded-full bg-gray-300"
+            ></Link>
+          ) : (
+            <Link href="/login">
+              <Button variant={"ghost"}>Login</Button>
+            </Link>
+          )}
         </div>
       </nav>
     </header>
