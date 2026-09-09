@@ -1,6 +1,6 @@
 "use client";
 import { Input } from "@/src/components/ui/input";
-import { useState } from "react";
+import { useState, type SyntheticEvent } from "react";
 import login from "../api/login";
 import { Button } from "@/src/components/ui/button";
 import Link from "next/link";
@@ -23,7 +23,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
     try {

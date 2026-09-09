@@ -3,7 +3,7 @@ import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import signup from "../api/signup";
 import useAuth from "../model/useAuth";
 import useRedirect from "../model/useRedirect";
@@ -23,7 +23,7 @@ export default function SignupForm() {
     if (user) redirect();
   }, [user, redirect]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
     try {
