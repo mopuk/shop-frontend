@@ -1,13 +1,8 @@
+import { User } from "@/src/entities/user/model/types";
+
 export type Token = {
   access_token: string;
   token_type: string;
-};
-
-export type User = {
-  email: string;
-  username: string;
-  role: "Customer" | "Admin";
-  created_at: string;
 };
 
 export type AuthState = {
