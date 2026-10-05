@@ -22,7 +22,9 @@ export default async function removeFromCart(
     throw new UnauthorizedError("Sign in required");
   }
   if (!res.ok) {
-    throw new Error("Failed to add item to cart");
+    const err = await res.text();
+    console.error("Cart API error:", res.status, err);
+    throw new Error(err || "Error removing item from cart");
   }
 
   return res.json();

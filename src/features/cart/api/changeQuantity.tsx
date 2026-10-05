@@ -1,21 +1,19 @@
-import { CartResponse } from "@/src/entities/cart/model/types";
+import { UnauthorizedError } from "./addCartItem";
 
-export class UnauthorizedError extends Error {}
-
-export default async function addCartItem(
+export default async function changeQuantity(
   variantId: number,
-  quantity: number = 1,
-): Promise<CartResponse> {
+  quantity: number,
+) {
   const tokenType = localStorage.getItem("token_type");
   const accessToken = localStorage.getItem("access_token");
 
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_API + `/api/v1/cart/items`,
+    process.env.NEXT_PUBLIC_BACKEND_API + "/api/v1/cart/items",
     {
-      method: "POST",
+      method: "PATCH",
       headers: {
-        Authorization: `${tokenType} ${accessToken}`,
         "Content-type": "application/json",
+        Authorization: `${tokenType} ${accessToken}`,
       },
       body: JSON.stringify({ variant_id: variantId, quantity: quantity }),
     },
@@ -24,10 +22,11 @@ export default async function addCartItem(
   if (res.status === 401 || res.status === 403) {
     throw new UnauthorizedError("Sign in required");
   }
+
   if (!res.ok) {
     const err = await res.text();
     console.error("Cart API error:", res.status, err);
-    throw new Error(err || "Error adding item from cart");
+    throw new Error(err || "Error changing item's quantity");
   }
 
   return res.json();
