@@ -6,7 +6,13 @@ export default function Footer() {
     <footer className="w-full px-10 py-6 grid grid-cols-2 bg-gray-200">
       <div>
         <Link href="/">
-          <Image src={"/images/Logo.svg"} alt="Logo" height={32} width={160} />
+          <Image
+            src={"/images/Logo.svg"}
+            alt="Logo"
+            height={32}
+            width={160}
+            loading="eager"
+          />
         </Link>
         <p className="font-hanken text-neutral text-xs mt-4">
           © 2024 Project Archives. All rights reserved.
