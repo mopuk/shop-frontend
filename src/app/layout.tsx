@@ -1,14 +1,14 @@
 import Header from "@/src/components/layout/Header";
 import "./globals.css";
 import { Montserrat, Hanken_Grotesk } from "next/font/google";
-import { cn } from "@/src/lib/utils";
+import { cn } from "@/src/shared/lib/utils";
 import Providers from "./providers";
 import Footer from "@/src/components/layout/Footer";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
-  variable: "--font-monstserrat",
+  variable: "--font-montserrat",
 });
 const hanken = Hanken_Grotesk({
   subsets: ["latin"],
@@ -22,10 +22,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn(montserrat.variable, hanken.variable)}>
-      <body className="min-h-full">
+      <body className="flex min-h-screen flex-col">
         <Providers>
           <Header />
-          {children}
+          <main className="flex-1">{children}</main>
           <Footer />
         </Providers>
         <SpeedInsights />

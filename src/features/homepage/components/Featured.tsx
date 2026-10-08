@@ -3,8 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import FeaturedCard from "./FeaturedCard";
 import Link from "next/link";
 import Image from "next/image";
-
-import { ProductVariant } from "@/src/types.ts";
+import { ProductVariantWithProduct } from "@/src/entities/product/model/types";
 
 export default function Featured() {
   const { data, isPending, error } = useQuery({
@@ -16,14 +15,6 @@ export default function Featured() {
       return await response.json();
     },
   });
-
-  if (isPending) {
-    return (
-      <div className="spinner-container">
-        <div className="spinner"></div>
-      </div>
-    );
-  }
 
   if (error) return <div>{error.message}</div>;
 
@@ -48,14 +39,28 @@ export default function Featured() {
         </Link>
       </div>
       <div className="grid grid-cols-3 gap-10 mt-6 text-center">
-        {data.variants.map((variant: ProductVariant) => (
-          <FeaturedCard
-            title={variant.product.name}
-            image_url={variant.thumbnail}
-            slug={variant.product.slug}
-            variant_id={variant.id}
-          />
-        ))}
+        {isPending
+          ? Array.from({ length: 3 }).map((_, index) => (
+              <div
+                key={index}
+                className="bg-green-200 font-montserrat font-semibold text-neutral text-xl py-7 rounded-xl flex items-center justify-center text-center"
+              >
+                <div className="spinner-container h-8">
+                  <div className="spinner h-8"></div>
+                </div>
+              </div>
+            ))
+          : data.variants
+              .slice(0, 3)
+              .map((variant: ProductVariantWithProduct) => (
+                <FeaturedCard
+                  title={variant.product.name}
+                  image_url={variant.thumbnail ?? ""}
+                  slug={variant.product.slug}
+                  variant_id={variant.id}
+                  key={variant.id}
+                />
+              ))}
       </div>
     </div>
   );

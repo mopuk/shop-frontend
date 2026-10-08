@@ -1,13 +1,23 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import useAuth from "@/src/features/auth/model/useAuth";
 
 export default function Header() {
+  const { isAuthenticated } = useAuth();
+
   return (
-    <header className="flex items-center w-full py-4 px-55 font-montserrat ">
+    <header className="flex items-center w-full py-4 px-55 font-montserrat shadow-sm">
       <nav className="w-screen flex justify-between items-center">
         <Link href="/">
-          <Image src={"/images/Logo.svg"} alt="Logo" height={32} width={160} />
+          <Image
+            src={"/images/Logo.svg"}
+            alt="Logo"
+            height={32}
+            width={160}
+            loading="eager"
+          />
         </Link>
         <div className="flex items-center gap-4">
           <Link href="/catalog">CATALOG</Link>
@@ -19,6 +29,7 @@ export default function Header() {
               alt="Search button"
               width={16}
               height={20}
+              loading="eager"
             ></Image>
           </Button>
           <Link href="/cart" className="flex flex-1 justify-end">
@@ -28,9 +39,20 @@ export default function Header() {
                 alt="Cart"
                 width={16}
                 height={20}
+                loading="eager"
               />
             </Button>
           </Link>
+          {isAuthenticated ? (
+            <Link
+              href="/me"
+              className="w-8 h-8 rounded-full bg-gray-300"
+            ></Link>
+          ) : (
+            <Link href="/login">
+              <Button variant={"ghost"}>Login</Button>
+            </Link>
+          )}
         </div>
       </nav>
     </header>
