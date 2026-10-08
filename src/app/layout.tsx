@@ -1,7 +1,7 @@
 import Header from "@/src/components/layout/Header";
 import "./globals.css";
 import { Montserrat, Hanken_Grotesk } from "next/font/google";
-import { cn } from "@/src/lib/utils";
+import { cn } from "@/src/shared/lib/utils";
 import Providers from "./providers";
 import Footer from "@/src/components/layout/Footer";
 import { SpeedInsights } from "@vercel/speed-insights/next";
