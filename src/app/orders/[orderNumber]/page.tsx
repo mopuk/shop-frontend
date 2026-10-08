@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/src/components/ui/button";
+import { Order } from "@/src/entities/order/model/types";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -10,7 +11,7 @@ export default function Page() {
   const orderNumber = Array.isArray(params.orderNumber)
     ? params.orderNumber[0]
     : params.orderNumber;
-  const [order, setOrder] = useState(null);
+  const [order, setOrder] = useState<null | Order>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
