@@ -20,7 +20,7 @@ export default function SummarySidebar({ totalPrice }: { totalPrice: number }) {
 
     if (responce.ok) {
       const order = await responce.json();
-      router.push(`/payment/${order.order_number}`);
+      router.push(`/orders/${order.order_number}`);
     }
   };
 
