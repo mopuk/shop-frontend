@@ -1,8 +1,7 @@
 "use client";
 
-import { CheckoutElementsProvider } from "@stripe/react-stripe-js/checkout";
 import { loadStripe } from "@stripe/stripe-js";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import CheckoutForm from "./CheckoutForm";
 import { Elements } from "@stripe/react-stripe-js";
 
@@ -54,6 +53,7 @@ export default function PaymentClient({
   return (
     <Elements stripe={stripePromise} options={{ clientSecret: clientSecret }}>
       <CheckoutForm orderNumber={orderNumber} />
+      {error && <div>{error}</div>}
     </Elements>
   );
 }

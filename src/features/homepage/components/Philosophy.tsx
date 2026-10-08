@@ -7,10 +7,10 @@ export default function Philosophy() {
         <Image src="/images/leaf.svg" alt="Leaf" width={25} height={25} />
         <h1 className="font-montserrat font-bold text-2xl">Our Philosophy</h1>
         <p className="w-full font-hanken text-neutral text-sm">
-          We believe that high-quality footwear shouldn't be a luxury. MOXPOKE
-          is dedicated to creating accessible, durable, and minimalist shoes
-          that support your daily movement without the unnecessary noise of fast
-          fashion.
+          We believe that high-quality footwear shouldn&apos;t be a luxury.
+          MOXPOKE is dedicated to creating accessible, durable, and minimalist
+          shoes that support your daily movement without the unnecessary noise
+          of fast fashion.
         </p>
         <ul className="w-full grid grid-cols-3 mt-4">
           <li className="justify-self-start flex flex-col items-center justify-center gap-2">

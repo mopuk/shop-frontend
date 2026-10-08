@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 import useAuth from "@/src/features/auth/model/useAuth";
 
 export default function Header() {
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   return (
     <header className="flex items-center w-full py-4 px-55 font-montserrat shadow-sm">

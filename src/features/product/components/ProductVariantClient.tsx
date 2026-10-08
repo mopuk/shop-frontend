@@ -21,7 +21,7 @@ export default function ProductVariantClient({
   const { product, variants, selectedVariant } = data;
   const authState = useAuth();
   const redirect = useRedirect("/signup");
-  const { cartItems, isPending } = useCart(authState);
+  const { cartItems } = useCart(authState);
   const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
 

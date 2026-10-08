@@ -1,4 +1,4 @@
-import { User } from "../model/types";
+import { User } from "@/src/entities/user/model/types";
 
 export default async function getCurrentUser(): Promise<User | null> {
   const accessToken = localStorage.getItem("access_token");
