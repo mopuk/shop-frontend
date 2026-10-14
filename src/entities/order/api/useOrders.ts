@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Order, OrdersData, OrderStatus } from "../model/types";
+import { OrdersData, OrderStatus, OrderType } from "../model/types";
 
 export default function useOrders() {
   return useQuery({
@@ -23,7 +23,7 @@ export default function useOrders() {
       }
       const json = await response.json();
       const orders = json.orders;
-      const activeOrders = orders.filter((order: Order) =>
+      const activeOrders = orders.filter((order: OrderType) =>
         [
           OrderStatus.created,
           OrderStatus.processing,
@@ -31,7 +31,7 @@ export default function useOrders() {
         ].includes(order.status),
       );
       const pastOrders = orders.filter(
-        (order: Order) => order.status === OrderStatus.delivered,
+        (order: OrderType) => order.status === OrderStatus.delivered,
       );
       return { activeOrders, pastOrders };
     },
