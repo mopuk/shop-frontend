@@ -1,42 +1,62 @@
 "use client";
 
-import { Button } from "@/src/components/ui/button";
-import { CartItem, CartResponse } from "@/src/entities/cart/model/types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
+import { Minus, Plus, Trash2 } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/src/shared/components/ui/button";
+import { CartItem, CartResponse } from "@/src/entities/cart/model/types";
 import changeQuantity from "../api/changeQuantity";
 import removeFromCart from "../api/removeCartItem";
+
+interface CartItemCardProps {
+  item: CartItem;
+  setItemToRemove: (item: CartItem) => void;
+}
 
 export default function CartItemCard({
   item,
   setItemToRemove,
-}: {
-  item: CartItem;
-  setItemToRemove: (item: CartItem) => void;
-}) {
+}: CartItemCardProps) {
   const queryClient = useQueryClient();
+
   const removeItemMutation = useMutation({
     mutationFn: () => removeFromCart(item.variant.id),
-
     onSuccess: (cart) => {
       queryClient.setQueryData(["cart_items"], cart);
     },
   });
+
   const desiredQuantityRef = useRef<number | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const latestRequestRef = useRef<number>(0);
 
+  const changeQuantityMutation = useMutation({
+    mutationFn: async ({
+      quantity,
+      requestId,
+    }: {
+      quantity: number;
+      requestId: number;
+    }) => {
+      const cart = await changeQuantity(item.variant.id, quantity);
+      return { cart, requestId };
+    },
+    onSuccess: ({ cart, requestId }) => {
+      if (requestId !== latestRequestRef.current) return;
+      queryClient.setQueryData<CartResponse>(["cart_items"], cart);
+      desiredQuantityRef.current = null;
+    },
+  });
+
   const handleChangeQuantity = (delta: number) => {
     const cart = queryClient.getQueryData<CartResponse>(["cart_items"]);
-
     if (!cart) return;
 
     const currentItem = cart.items.find(
       (cartItem: CartItem) => cartItem.variant.id === item.variant.id,
     );
-
     if (!currentItem) return;
 
     if (desiredQuantityRef.current === null) {
@@ -57,7 +77,6 @@ export default function CartItemCard({
       ...cart,
       items: cart.items.map((cartItem: CartItem) => {
         if (cartItem.variant.id !== item.variant.id) return cartItem;
-
         return { ...cartItem, quantity: newQuantity };
       }),
     });
@@ -72,97 +91,101 @@ export default function CartItemCard({
     }, 300);
   };
 
-  const changeQuantityMutation = useMutation({
-    mutationFn: async ({
-      quantity,
-      requestId,
-    }: {
-      quantity: number;
-      requestId: number;
-    }) => {
-      const cart = await changeQuantity(item.variant.id, quantity);
-      return { cart, requestId };
-    },
-    onSuccess: ({
-      cart,
-      requestId,
-    }: {
-      cart: CartResponse;
-      requestId: number;
-    }) => {
-      if (requestId !== latestRequestRef.current) return;
-      queryClient.setQueryData<CartResponse>(["cart_items"], cart);
-      desiredQuantityRef.current = null;
-    },
-  });
+  const hasPriceChanged =
+    Number(item.variant.variant_price) !== Number(item.price_at_addition);
 
   return (
-    <div className="flex gap-4 shadow-lg p-2 rounded-lg">
-      {item.variant.thumbnail ? (
-        <Image
-          src={item.variant.thumbnail}
-          width={150}
-          height={200}
-          alt={item.variant.product.name}
-        />
-      ) : (
-        <div className="w-45 h-50 flex justify-center items-center from-neutral-100 to-neutral-200 bg-linear-to-b rounded-lg">
-          Нет изображения
-        </div>
-      )}
-      <div className="flex flex-col justify-between w-full">
-        <div>
+    <li className="flex flex-col sm:flex-row gap-4 p-4 rounded-xl border border-neutral/15 bg-background shadow-2xs list-none">
+      <div className="relative w-full sm:w-32 h-36 rounded-lg overflow-hidden shrink-0 border border-neutral/10 bg-tertiary flex items-center justify-center">
+        {item.variant.thumbnail ? (
+          <Image
+            src={item.variant.thumbnail}
+            alt={item.variant.product.name}
+            fill
+            sizes="128px"
+            className="object-cover"
+            unoptimized
+          />
+        ) : (
+          <div
+            className="w-14 h-14 rounded-full border border-secondary/10 shadow-xs"
+            style={{ backgroundColor: item.variant.color.hex_code }}
+          />
+        )}
+      </div>
+
+      <div className="flex flex-col justify-between flex-1 gap-4">
+        <div className="flex flex-col gap-1">
           <Link
-            href={`product/${item.variant.product.slug}?variant=${item.variant.id}`}
+            href={`/product/${item.variant.product.slug}?variant=${item.variant.id}`}
+            className="font-montserrat font-medium text-xs text-secondary hover:text-primary transition-colors line-clamp-2"
           >
-            <h2 className="font-montserrat text-sm text-black">
-              {item.variant.product.name}
-            </h2>
+            {item.variant.product.name}
           </Link>
-          <h3 className="font-hanken text-sm text-primary">
-            {item.variant.variant_price}{" "}
-            {item.variant.variant_price != Number(item.price_at_addition) && (
-              <del className="text-neutral">{item.price_at_addition}</del>
-            )}
-          </h3>
-        </div>
-        <div className="flex items-center self-end gap-2">
-          <Button
-            variant={"outline"}
-            className="w-12 h-12 p-2"
-            onClick={() => removeItemMutation.mutate()}
-          >
-            <Image
-              src="/images/trashcan.svg"
-              alt="Удалить из корзины"
-              width={24}
-              height={24}
+
+          <div className="flex items-center gap-2 mt-1">
+            <span
+              className="w-3 h-3 rounded-full border border-black/10 shrink-0"
+              style={{ backgroundColor: item.variant.color.hex_code }}
+              aria-hidden="true"
             />
-          </Button>
-          <Button
-            variant={"outline"}
-            className="w-12 h-12 p-2"
-            onClick={() => handleChangeQuantity(-1)}
-          >
-            <Image
-              src="/images/minus.svg"
-              width={24}
-              height={24}
-              alt="Уменьшить количество"
-            />
-          </Button>
-          <div className="w-12 h-12 font-hanken text-lg text-neutral text-center align-middle ">
-            {item.quantity}
+            <span className="font-montserrat text-xs text-neutral">
+              {item.variant.color.slug}
+            </span>
           </div>
+
+          <div className="flex items-baseline gap-2 mt-2">
+            <span className="font-hanken font-bold text-sm text-primary">
+              {item.variant.variant_price.toLocaleString("ru-RU")} ₽
+            </span>
+            {hasPriceChanged && (
+              <del className="font-hanken text-xs text-neutral">
+                {Number(item.price_at_addition).toLocaleString("ru-RU")} ₽
+              </del>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between sm:justify-end gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-neutral/10">
           <Button
-            variant={"outline"}
-            className="w-12 h-12 p-2 text-2xl font-bold text-primary"
-            onClick={() => handleChangeQuantity(1)}
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label="Удалить из корзины"
+            disabled={removeItemMutation.isPending}
+            onClick={() => removeItemMutation.mutate()}
+            className="h-9 w-9 text-neutral hover:text-red-600 hover:bg-red-50"
           >
-            +
+            <Trash2 className="h-4 w-4" />
           </Button>
+
+          <div className="flex items-center rounded-lg border border-neutral/20 bg-tertiary">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label="Уменьшить количество"
+              className="h-8 w-8 text-secondary hover:bg-neutral/10 rounded-r-none"
+              onClick={() => handleChangeQuantity(-1)}
+            >
+              <Minus className="h-3.5 w-3.5" />
+            </Button>
+            <span className="w-10 text-center font-hanken font-semibold text-xs text-secondary select-none">
+              {item.quantity}
+            </span>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label="Увеличить количество"
+              className="h-8 w-8 text-secondary hover:bg-neutral/10 rounded-l-none"
+              onClick={() => handleChangeQuantity(1)}
+            >
+              <Plus className="h-3.5 w-3.5" />
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+    </li>
   );
 }
