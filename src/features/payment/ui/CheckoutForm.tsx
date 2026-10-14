@@ -6,7 +6,13 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 
-export default function CheckoutForm({ orderNumber }: { orderNumber: string }) {
+export default function CheckoutForm({
+  orderNumber,
+  isPending,
+}: {
+  orderNumber: string;
+  isPending: boolean;
+}) {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -30,7 +36,11 @@ export default function CheckoutForm({ orderNumber }: { orderNumber: string }) {
   return (
     <form onSubmit={handleSubmit}>
       <PaymentElement />
-      <Button type="submit" className="bg-primary px-4 py-2">
+      <Button
+        type="submit"
+        className={`bg-primary px-4 py-2 ${isPending ? "bg-green-200 hover:cursor-wait" : ""}`}
+        disabled={isPending}
+      >
         Оплатить
       </Button>
     </form>

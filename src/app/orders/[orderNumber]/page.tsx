@@ -12,18 +12,26 @@ export default function Page() {
     ? params.orderNumber[0]
     : params.orderNumber;
   const [order, setOrder] = useState<null | Order>(null);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isNavigationPending, setIsNavigationPending] = useState(false);
 
   useEffect(() => {
     async function fetchOrder() {
-      setLoading(true);
+      const tokenType = localStorage.getItem("token_type");
+      const accessToken = localStorage.getItem("access_token");
+
+      if (!tokenType || !accessToken) {
+        router.push("/login");
+      }
+
+      setIsLoading(true);
       const responce = await fetch(
         process.env.NEXT_PUBLIC_BACKEND_API + `/api/v1/orders/${orderNumber}`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `${localStorage.getItem("token_type")} ${localStorage.getItem("access_token")}`,
+            Authorization: `${tokenType} ${accessToken}`,
           },
         },
       );
@@ -33,8 +41,6 @@ export default function Page() {
         setOrder(order);
       }
 
-      setLoading(false);
-
       if (responce.status == 401) {
         router.push("/login");
       }
@@ -42,32 +48,36 @@ export default function Page() {
       if (responce.status == 404) {
         router.push("/cart");
       }
+      setIsLoading(false);
     }
 
     fetchOrder();
   }, [orderNumber, router]);
 
   const handlePayment = () => {
+    setIsNavigationPending(true);
     router.push(window.location + "/payment");
+    setIsNavigationPending(false);
   };
 
   return (
     <div>
-      {loading ? (
+      {isLoading ? (
         <div>Загрузка...</div>
       ) : order ? (
         <div>
           <h1>Заказ: {order.order_number}</h1>
           <div>Статус: {order.status}</div>
-          {order.status == "processing" ||
-            (order.status == "created" && (
-              <Button
-                className="bg-primary px-4 py-2 font-hanken"
-                onClick={handlePayment}
-              >
-                Оплатить
-              </Button>
-            ))}
+          {(order.status == "processing" || order.status == "created") && (
+            <Button
+              className={`bg-primary px-4 py-2 font-hanken spinner-container ${isNavigationPending ? "bg-green-200 hover:cursor-wait" : ""}`}
+              onClick={handlePayment}
+              disabled={isNavigationPending}
+            >
+              Оплатить
+              {isNavigationPending && <span className="spinner"></span>}
+            </Button>
+          )}
         </div>
       ) : (
         <div>Заказ не найден</div>
