@@ -1,32 +1,35 @@
-import { Button } from "@/src/components/ui/button";
-import { Input } from "@/src/components/ui/input";
+import { Button } from "@/src/shared/components/ui/button";
+import { Input } from "@/src/shared/components/ui/input";
 
 export default function Newsletter() {
   return (
-    <div className="w-full pb-24 px-14 text-white">
-      <div className="flex justify-between items-center p-16 bg-secondary rounded-xl">
-        <div>
-          <h1 className="font-montserrat font-semibold text-xl">
-            Join the movement
-          </h1>
-          <p className="font-hanken text-gray-200 text-xs">
-            Get updates on new collections and secret drops.
+    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
+      <div className="flex flex-col lg:flex-row items-center justify-between gap-8 rounded-3xl bg-secondary p-8 sm:p-12 lg:p-16 text-white shadow-xl">
+        <div className="max-w-xl text-center lg:text-left">
+          <h2 className="font-montserrat font-bold text-xl sm:text-2xl text-muted">
+            Присоединяйтесь к сообществу
+          </h2>
+          <p className="font-montserrat text-xs sm:text-sm text-muted/80 mt-2">
+            Узнавайте первыми о закрытых релизах, акциях и обновлении коллекций.
           </p>
         </div>
-        <div>
-          <form>
-            <div className="relative bg-[#ffffff10] rounded-xl">
-              <Input
-                placeholder="Enter your email"
-                className="w-125 h-16 pr-25 font-hanken text-xs placeholder:text-gray-200 border-0 outline-0 focus:outline-0"
-              />
-              <Button className="absolute right-2 top-1/2 -translate-y-1/2 h-14 px-6 py-4 font-hanken font-semibold text-xs ">
-                JOIN
-              </Button>
-            </div>
+
+        <div className="w-full lg:w-auto">
+          <form className="relative flex w-full max-w-md mx-auto lg:mx-0">
+            <Input
+              type="email"
+              placeholder="Введите ваш e-mail"
+              className="h-14 w-full rounded-xl bg-background/10 border-background/15 pr-36 pl-4 font-montserrat text-xs text-muted placeholder:text-muted/70 focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary"
+            />
+            <Button
+              type="submit"
+              className="absolute right-1.5 top-1.5 bottom-1.5 h-11 px-5 rounded-lg bg-primary font-hanken text-xs font-semibold text-muted hover:bg-primary/90 transition-colors uppercase"
+            >
+              Подписаться
+            </Button>
           </form>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
