@@ -7,7 +7,7 @@ export enum OrderStatus {
   delivered = "delivered",
 }
 
-export type OrderProductSchema = {
+export type OrderProductType = {
   id: number;
   name: string;
   description: string;
@@ -21,17 +21,17 @@ export type OrderProductSchema = {
   base_price: number;
 };
 
-export type OrderProductVariantSchema = {
+export type OrderProductVariantType = {
   id: number;
   variant_price: number;
   stock: number;
   is_available: boolean;
-  product: OrderProductSchema;
+  product: OrderProductType;
 };
 
 export type OrderItemType = {
   id: number;
-  variant: OrderProductVariantSchema;
+  variant: OrderProductVariantType;
   product_name: string;
   quantity: number;
   price_paid: number;
