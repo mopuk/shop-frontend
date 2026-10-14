@@ -1,9 +1,9 @@
-import Header from "@/src/components/layout/Header";
+import Header from "@/src/shared/components/layout/Header";
 import "./globals.css";
 import { Montserrat, Hanken_Grotesk } from "next/font/google";
 import { cn } from "@/src/shared/lib/utils";
 import Providers from "./providers";
-import Footer from "@/src/components/layout/Footer";
+import Footer from "@/src/shared/components/layout/Footer";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const montserrat = Montserrat({
@@ -21,7 +21,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn(montserrat.variable, hanken.variable)}>
+    <html
+      lang="en"
+      className={cn(montserrat.variable, hanken.variable)}
+      suppressHydrationWarning
+    >
       <body className="flex min-h-screen flex-col">
         <Providers>
           <Header />
