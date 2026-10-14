@@ -1,3 +1,4 @@
+import { Clock, CreditCard, PackageCheck, Truck } from "lucide-react";
 import { OrderStatus } from "./types";
 
 export const ALL_ORDER_STATUSES: readonly OrderStatus[] = [
@@ -31,4 +32,13 @@ export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
   [OrderStatus.delivered]: "Доставлен",
   [OrderStatus.canceled]: "Отменен",
   [OrderStatus.failed]: "Ошибка оплаты",
+};
+
+export const STEP_ICONS: Record<OrderStatus, React.ElementType> = {
+  [OrderStatus.created]: CreditCard,
+  [OrderStatus.processing]: Clock,
+  [OrderStatus.paid]: Truck,
+  [OrderStatus.delivered]: PackageCheck,
+  [OrderStatus.failed]: Clock,
+  [OrderStatus.canceled]: Clock,
 };

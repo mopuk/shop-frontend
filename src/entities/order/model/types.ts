@@ -1,5 +1,3 @@
-import { ProductVariant } from "../../product/model/types";
-
 export enum OrderStatus {
   processing = "processing",
   paid = "paid",
@@ -31,14 +29,14 @@ export type OrderProductVariantSchema = {
   product: OrderProductSchema;
 };
 
-export type OrderItem = {
+export type OrderItemType = {
   id: number;
   variant: OrderProductVariantSchema;
   product_name: string;
   quantity: number;
   price_paid: number;
 };
-export type Order = {
+export type OrderType = {
   id: number;
   user_id: number;
   order_number: string;
@@ -49,10 +47,10 @@ export type Order = {
   status: OrderStatus;
   created_at: Date;
   updated_at: Date;
-  items: OrderItem[];
+  items: OrderItemType[];
 };
 
 export type OrdersData = {
-  activeOrders: Order[];
-  pastOrders: Order[];
+  activeOrders: OrderType[];
+  pastOrders: OrderType[];
 };
