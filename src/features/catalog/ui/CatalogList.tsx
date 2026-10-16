@@ -25,10 +25,6 @@ export default function CatalogList({
   const sortingOption: string = filters.sort;
   const limitOption: number = filters.limit;
 
-  const handleOnClick = (slug: string, variantId: number) => {
-    router.push(`/product/${slug}?variant=${variantId}`);
-  };
-
   const handleOnSortingChange = (value: string) => {
     if (value === sortingOption) return;
 
@@ -51,12 +47,6 @@ export default function CatalogList({
     router.replace(`?${params.toString()}`);
   };
 
-  if (isPending)
-    return (
-      <div className="spinner-container">
-        <div className="spinner"></div>
-      </div>
-    );
   if (error) return <div>{error.message}</div>;
 
   return (
@@ -68,17 +58,26 @@ export default function CatalogList({
         handleOnSortingChange={handleOnSortingChange}
         handleOnLimitChange={handleOnLimitChange}
       />
-      <ul className="grid grid-cols-2 xl:grid-cols-4 gap-x-2 gap-y-4 justify-items-center">
-        {data?.variants.map((productVariant: ProductVariantWithProduct) => {
-          return (
-            <ProductCard
-              key={productVariant.id}
-              productVariant={productVariant}
-              onClick={handleOnClick}
-            />
-          );
-        })}
-      </ul>
+      {isPending ? (
+        <div
+          className="spinner-container bg-background shadow-md mb-4"
+          role="status"
+          aria-label="Loading catalog products"
+        >
+          <div className="spinner" />
+        </div>
+      ) : (
+        <ul className="grid grid-cols-2 xl:grid-cols-4 gap-x-2 gap-y-4 justify-items-center">
+          {data?.variants.map((productVariant: ProductVariantWithProduct) => {
+            return (
+              <ProductCard
+                key={productVariant.id}
+                productVariant={productVariant}
+              />
+            );
+          })}
+        </ul>
+      )}
       <Pagination pagination={data?.pagination} searchParams={searchParams} />
     </div>
   );

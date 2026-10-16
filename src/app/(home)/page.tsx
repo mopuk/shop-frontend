@@ -5,9 +5,9 @@ import Hero from "../../features/homepage/components/Hero";
 import Newsletter from "../../features/homepage/components/Newsletter";
 import Philosophy from "../../features/homepage/components/Philosophy";
 
-export default function page() {
+export default function HomePage() {
   return (
-    <div className="flex flex-col items-center gap-10">
+    <div className="flex flex-col w-full gap-16 sm:gap-24 overflow-hidden pb-12">
       <Hero />
       <Featured />
       <Categories />

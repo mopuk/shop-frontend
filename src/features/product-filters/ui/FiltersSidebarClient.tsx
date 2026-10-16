@@ -1,13 +1,16 @@
 "use client";
 
-import { Color, Size } from "@/src/shared/lib/types";
-import { Checkbox } from "@/src/components/ui/checkbox";
-import { Field, FieldGroup, FieldLabel } from "@/src/components/ui/field";
+import { Checkbox } from "@/src/shared/components/ui/checkbox";
+import {
+  Field,
+  FieldGroup,
+  FieldLabel,
+} from "@/src/shared/components/ui/field";
 import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox";
-import useFilters from "../model/use-filters";
+import { Button } from "@/src/shared/components/ui/button";
 import { CategoriesListResponse } from "@/src/entities/category/model/types";
-import { ProductFilterOptions } from "@/src/shared/lib/types";
-import { Button } from "@/src/components/ui/button";
+import { Color, ProductFilterOptions, Size } from "@/src/shared/lib/types";
+import useFilters from "../model/use-filters";
 
 type CheckboxFilterKey = "categories" | "brands" | "materials";
 
@@ -27,8 +30,8 @@ function FilterSection({
   className?: string;
 }) {
   return (
-    <div>
-      <h3 className="font-hanken font-semibold text-xs text-neutral mb-3">
+    <div className="pt-4 first:pt-0">
+      <h3 className="font-hanken font-bold text-xs uppercase tracking-wider text-secondary mb-3">
         {title}
       </h3>
       <FieldGroup className={className}>{children}</FieldGroup>
@@ -52,15 +55,23 @@ function CheckboxFilterOption({
   onCheckedChange: (checked: boolean) => void;
 }) {
   return (
-    <Field key={id} orientation="horizontal">
+    <Field
+      key={id}
+      orientation="horizontal"
+      className="items-center gap-2 py-1"
+    >
       <Checkbox
         id={id}
         name={name}
         value={value}
         checked={checked}
         onCheckedChange={onCheckedChange}
+        className="border-neutral/30 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
       />
-      <FieldLabel htmlFor={id} className="font-hanken text-xs text-neutral">
+      <FieldLabel
+        htmlFor={id}
+        className="font-montserrat text-xs text-secondary cursor-pointer select-none"
+      >
         {label}
       </FieldLabel>
     </Field>
@@ -111,15 +122,31 @@ export default function FiltersSidebarClient({
   categories: CategoriesListResponse;
 }) {
   const { selectedFilters, toggleFilter, clearFilters } = useFilters();
+
+  const hasActiveFilters = Object.values(selectedFilters).some(
+    (arr) => Array.isArray(arr) && arr.length > 0,
+  );
+
   return (
-    <div className="m-6">
-      <h2 className="font-hanken font-semibold text-sm text-primary ml-6 mb-2">
-        Фильтры
-      </h2>
-      <div className="bg-[#F3F3F6] p-6 rounded-lg">
+    <aside className="w-full">
+      <div className="flex items-center justify-between mb-3 px-1">
+        <h2 className="font-hanken font-bold text-sm text-secondary">
+          Фильтры
+        </h2>
+        {hasActiveFilters && (
+          <button
+            type="button"
+            onClick={clearFilters}
+            className="font-montserrat text-xs text-neutral hover:text-primary transition-colors cursor-pointer"
+          >
+            Сбросить все
+          </button>
+        )}
+      </div>
+
+      <div className="bg-background border border-neutral/20 shadow-xs p-5 rounded-xl">
         <form
-          action=""
-          className="flex flex-col gap-2"
+          className="flex flex-col divide-y divide-neutral/10"
           onSubmit={(e) => e.preventDefault()}
         >
           <CheckboxFilterSection
@@ -130,6 +157,7 @@ export default function FiltersSidebarClient({
             valueGetter={(category) => category.slug}
             onToggle={toggleFilter}
           />
+
           <CheckboxFilterSection
             title="Бренды"
             options={filters.brands}
@@ -138,6 +166,7 @@ export default function FiltersSidebarClient({
             valueGetter={(brand) => brand.slug}
             onToggle={toggleFilter}
           />
+
           <CheckboxFilterSection
             title="Материалы"
             options={filters.materials}
@@ -147,12 +176,15 @@ export default function FiltersSidebarClient({
             onToggle={toggleFilter}
           />
 
-          <FilterSection title="Размеры" className="flex-row flex-wrap">
+          <FilterSection
+            title="Размеры"
+            className="flex-row flex-wrap gap-2 mb-2"
+          >
             {filters.sizes.map((size: Size) => (
-              <Field key={size.id} className="w-16 h-10">
+              <Field key={size.id} className="size-10 shrink-0">
                 <FieldLabel
                   htmlFor={`size-${size.id}`}
-                  className="relative size-full cursor-pointer"
+                  className="relative size-full cursor-pointer select-none"
                 >
                   <CheckboxPrimitive.Root
                     id={`size-${size.id}`}
@@ -164,7 +196,11 @@ export default function FiltersSidebarClient({
                     }
                   />
                   <div
-                    className={`size-full flex justify-center items-center font-hanken text-xs text-neutral rounded-md border-2 bg-[#E2E2E5] ${selectedFilters.sizes.includes(size.name) ? "border-primary" : "border-transparent"}`}
+                    className={`size-full flex justify-center items-center font-hanken text-xs rounded-full border transition-all ${
+                      selectedFilters.sizes.includes(size.name)
+                        ? "bg-primary border-primary text-white shadow-xs"
+                        : "bg-tertiary border-neutral/20 text-secondary hover:border-neutral/40"
+                    }`}
                   >
                     {size.name}
                   </div>
@@ -173,10 +209,17 @@ export default function FiltersSidebarClient({
             ))}
           </FilterSection>
 
-          <FilterSection title="Цвета" className="flex-row flex-wrap">
+          <FilterSection
+            title="Цвета"
+            className="flex-row flex-wrap gap-2.5 mb-2"
+          >
             {filters.colors.map((color: Color) => (
-              <Field key={color.id} className="w-12 h-12">
-                <FieldLabel className="relative block size-12 cursor-pointer">
+              <Field key={color.id} className="size-10 shrink-0">
+                <FieldLabel
+                  htmlFor={`color-${color.id}`}
+                  aria-label={`Цвет: ${color.slug}`}
+                  className="relative block size-full cursor-pointer"
+                >
                   <CheckboxPrimitive.Root
                     id={`color-${color.id}`}
                     name="colors"
@@ -186,23 +229,32 @@ export default function FiltersSidebarClient({
                     }
                     className="absolute inset-0 opacity-0"
                   />
-
                   <div
-                    className={`size-full rounded-xl border-3 ${selectedFilters.colors.includes(color.slug) ? "border-primary" : "border-gray-400"}`}
+                    className={`size-full rounded-full transition-transform hover:scale-105 ${
+                      selectedFilters.colors.includes(color.slug)
+                        ? "ring-2 ring-primary ring-offset-2"
+                        : "ring-1 ring-black/10"
+                    }`}
                     style={{ backgroundColor: color.hex_code }}
                   />
                 </FieldLabel>
               </Field>
             ))}
           </FilterSection>
-          <Button
-            onClick={clearFilters}
-            className="font-hanken text-white mt-4 py-6 bg-primary hover:bg-primary/90"
-          >
-            Очистить фильтры
-          </Button>
+
+          <div className="pt-5">
+            <Button
+              type="button"
+              variant="outline"
+              disabled={!hasActiveFilters}
+              onClick={clearFilters}
+              className="w-full font-hanken text-xs text-secondary border-neutral/20 hover:bg-tertiary disabled:opacity-40"
+            >
+              Сбросить фильтры
+            </Button>
+          </div>
         </form>
       </div>
-    </div>
+    </aside>
   );
 }

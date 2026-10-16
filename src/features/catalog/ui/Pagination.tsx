@@ -1,51 +1,146 @@
 "use client";
 
-import { Button } from "@/src/components/ui/button";
+import Link from "next/link";
+import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
+import { Button } from "@/src/shared/components/ui/button";
 import { Pagination as PaginationType } from "@/src/entities/product/model/types";
 import {
   parseFilters,
   SearchParamsInput,
   toURLSearchParams,
 } from "@/src/shared/lib/parse-filters";
-import { useRouter } from "next/navigation";
+
+interface PaginationProps {
+  pagination: PaginationType | undefined;
+  searchParams: SearchParamsInput;
+}
 
 export default function Pagination({
   pagination,
   searchParams,
-}: {
-  pagination: PaginationType | undefined;
-  searchParams: SearchParamsInput;
-}) {
-  const router = useRouter();
+}: PaginationProps) {
+  if (!pagination || pagination.total_pages <= 1) return null;
+
   const { limit } = parseFilters(searchParams);
-  const handleOnClick = (page: number) => {
+  const {
+    current_page: current,
+    total_pages: total,
+    has_previous,
+    has_next,
+  } = pagination;
+
+  const createPageUrl = (page: number) => {
     const params = toURLSearchParams(searchParams);
     params.set("offset", String((page - 1) * limit));
-    router.replace(`?${params.toString()}`, { scroll: false });
+    return `?${params.toString()}`;
   };
 
-  if (!pagination || pagination.total_pages <= 1) return null;
+  const getPageNumbers = () => {
+    const pages: (number | "ellipsis-start" | "ellipsis-end")[] = [];
+
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+
+    pages.push(1);
+
+    if (current > 3) {
+      pages.push("ellipsis-start");
+    }
+
+    const start = Math.max(2, current - 1);
+    const end = Math.min(total - 1, current + 1);
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    if (current < total - 2) {
+      pages.push("ellipsis-end");
+    }
+
+    pages.push(total);
+
+    return pages;
+  };
+
   return (
-    <div className="flex justify-center gap-2 my-4">
-      {pagination.current_page > 2 && (
-        <Button onClick={() => handleOnClick(1)}>1</Button>
-      )}
-      {pagination.has_previous && (
-        <Button onClick={() => handleOnClick(pagination.current_page - 1)}>
-          ⬅
-        </Button>
-      )}
-      <Button>{pagination.current_page}</Button>
-      {pagination.has_next && (
-        <Button onClick={() => handleOnClick(pagination.current_page + 1)}>
-          ➡
-        </Button>
-      )}
-      {pagination.current_page < pagination.total_pages - 1 && (
-        <Button onClick={() => handleOnClick(pagination.total_pages)}>
-          {pagination.total_pages}
-        </Button>
-      )}
-    </div>
+    <nav
+      role="navigation"
+      aria-label="Навигация по страницам"
+      className="flex items-center justify-center gap-1 my-8 font-montserrat"
+    >
+      <Button
+        disabled={!has_previous}
+        variant="outline"
+        size="icon"
+        aria-label="Предыдущая страница"
+        className="h-10 w-10 border-neutral/20 text-secondary hover:bg-tertiary disabled:opacity-30 disabled:border-neutral/10"
+      >
+        {has_previous ? (
+          <Link href={createPageUrl(current - 1)} scroll={false}>
+            <ChevronLeft className="h-5 w-5" />
+          </Link>
+        ) : (
+          <ChevronLeft className="h-5 w-5" />
+        )}
+      </Button>
+
+      <div className="flex items-center gap-1">
+        {getPageNumbers().map((item) => {
+          if (typeof item === "string") {
+            return (
+              <span
+                key={item}
+                className="flex h-10 w-10 items-center justify-center text-neutral"
+                aria-hidden="true"
+              >
+                <MoreHorizontal className="h-5 w-5" />
+              </span>
+            );
+          }
+
+          const isCurrent = item === current;
+
+          return (
+            <Button
+              key={item}
+              variant={isCurrent ? "default" : "outline"}
+              size="icon"
+              aria-current={isCurrent ? "page" : undefined}
+              className={`h-10 w-10 text-xs font-semibold ${
+                isCurrent
+                  ? "pointer-events-none bg-primary border-primary text-white shadow-xs"
+                  : "border-neutral/20 text-secondary hover:bg-tertiary hover:border-neutral/40"
+              }`}
+            >
+              {isCurrent ? (
+                <span>{item}</span>
+              ) : (
+                <Link href={createPageUrl(item)} scroll={false}>
+                  {item}
+                </Link>
+              )}
+            </Button>
+          );
+        })}
+      </div>
+
+      <Button
+        disabled={!has_next}
+        variant="outline"
+        size="icon"
+        aria-label="Следующая страница"
+        className="h-10 w-10 border-neutral/20 text-secondary hover:bg-tertiary disabled:opacity-30 disabled:border-neutral/10"
+      >
+        {has_next ? (
+          <Link href={createPageUrl(current + 1)} scroll={false}>
+            <ChevronRight className="h-5 w-5" />
+          </Link>
+        ) : (
+          <ChevronRight className="h-5 w-5" />
+        )}
+      </Button>
+    </nav>
   );
 }

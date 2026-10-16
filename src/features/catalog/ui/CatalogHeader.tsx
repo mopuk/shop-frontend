@@ -5,7 +5,7 @@ import {
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
-} from "@/src/components/ui/combobox";
+} from "@/src/shared/components/ui/combobox";
 
 const sortingOptions = [
   { value: "newest", label: "Сначала новинки" },
@@ -35,12 +35,14 @@ export default function CatalogHeader({
   handleOnLimitChange: (value: number) => void;
 }) {
   return (
-    <div className="flex justify-between items-center py-4">
-      <h2 className="font-hanken font-bold text-xs text-neutral ">
+    <div className="flex justify-between items-center py-1">
+      <h2 className="hidden md:block font-hanken font-bold text-xs text-neutral">
         Показано товаров: {dataLength}
       </h2>
       <div className="flex items-center gap-2">
-        <span className="font-hanken text-neutral ">Товаров на странице: </span>
+        <span className="text-[12px] md:text-sm font-hanken text-neutral">
+          Товаров на странице:{" "}
+        </span>
         <Combobox
           items={limitOptions}
           itemToStringValue={(item) => item.label}
@@ -52,21 +54,27 @@ export default function CatalogHeader({
           }}
         >
           <ComboboxInput
-            placeholder="Выберите количество товаров"
-            className="font-hanken text-black w-24"
+            placeholder="Кол-во"
+            className="w-20 text-[11px] md:text-[12px] placeholder:text-[10px] font-hanken text-secondary"
           />
           <ComboboxContent>
             <ComboboxEmpty>Ничего не найдено.</ComboboxEmpty>
             <ComboboxList>
               {(item) => (
-                <ComboboxItem key={item.value} value={item}>
+                <ComboboxItem
+                  key={item.value}
+                  value={item}
+                  className="text-[12px] md:text-sm"
+                >
                   {item.label}
                 </ComboboxItem>
               )}
             </ComboboxList>
           </ComboboxContent>
         </Combobox>
-        <span className="font-hanken text-neutral ">Сортировка по </span>
+        <span className="text-[12px] md:text-sm font-hanken text-neutral">
+          Сортировка по{" "}
+        </span>
         <Combobox
           items={sortingOptions}
           itemToStringValue={(item) => item.label}
@@ -80,13 +88,17 @@ export default function CatalogHeader({
         >
           <ComboboxInput
             placeholder="Выберите сортировку"
-            className="font-hanken text-black w-fit"
+            className="font-hanken text-black w-fit "
           />
-          <ComboboxContent>
+          <ComboboxContent className="text-[10px] md:text-sm ">
             <ComboboxEmpty>Ничего не найдено.</ComboboxEmpty>
-            <ComboboxList>
+            <ComboboxList className="text-[12px] md:text-sm">
               {(item) => (
-                <ComboboxItem key={item.value} value={item}>
+                <ComboboxItem
+                  key={item.value}
+                  value={item}
+                  className="text-[12px] md:text-sm"
+                >
                   {item.label}
                 </ComboboxItem>
               )}
